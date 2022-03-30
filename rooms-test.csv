@@ -1,0 +1,4 @@
+﻿id|name|props|adjacentCells|descriptionTextDefault|descriptionTextSolved|descriptionPic
+0|Dirty Cave|1 2 3|1-e |"It sure is dark and smelly in here. So dark, in fact, that you almost trip over a FLASHLIGHT in the dirt."|"Now that the lights are on, you can see a rusty DOOR with a big ol' LOCK on it."|<><><><>
+1|Wizard's Study|4|0-w 2-n|"This place is filled with dusty tomes. An old WIZARD stands here, engrossed in his studies."|-1|()()()()()()(
+2|Portal|-1|-1|Gr8 Jorb U done gone and winned the game.|-1|**********
