@@ -20,6 +20,7 @@ class Room
 {
     // Attributes
     int id;                                    // id of room. its position in the rooms[] matrix
+    std::string name;                               // name of room
     std::string descriptionPic;                // ascii the reason these are separate is in case they change over course of gameplay
     std::string descriptionText;               // text	 the reason these are separate is in case they change over course of gameplay
     std::vector<int> *props;                   // array of interactables in the room (id's)

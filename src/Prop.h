@@ -1,6 +1,7 @@
 #ifndef PROP_H
 #define PROP_H
 
+#include <vector>
 #include <string>
 
 /****************************************************************************************************
@@ -9,17 +10,21 @@
 class Prop
 {
     // Attributes
-    static const int COMMAND_COUNT = 0; // todo: define this when actual commands are established
     int id;
-    bool pickedUp; // whether or not item has been picked up by player. Used so player can't pick up items twice
-    int homeRoom;  // the ID of the item's original location. Used for changing game state in other rooms.
+    std::string name; // name of prop
+    bool pickedUp;    // whether or not item has been picked up by player. Used so player can't pick up items twice
+    int homeRoom;     // the ID of the item's original location. Used for changing game state in other rooms.
     bool expired;
-    int validCommands[COMMAND_COUNT] = {}; // this is a list of acceptable commands for this specific item. likely represented by an enum in main or something
-    int solutionRoom;                      // the ID of the room where the item must be used. Used to determine if player has completed obstacle
-    std::string description;               // description of item. Used for EXAMINE command
+    std::vector<int> validCommands; // this is a list of acceptable commands for this specific item. likely represented by an enum in main or something
+    int solutionRoom;               // the ID of the room where the item must be used. Used to determine if player has completed obstacle
+    std::string description;        // description of item. Used for EXAMINE command
 
     // Methods
 public:
+    std::string getName() const
+    {
+        return name;
+    }
     int getID() const
     {
         return id;

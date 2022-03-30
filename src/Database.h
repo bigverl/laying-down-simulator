@@ -52,6 +52,8 @@ public:
 
     std::string getRoomName(const int &id) const;
 
+    std::vector<Prop> *getProps() const;
+
     std::vector<Room> *getRooms() const;
 };
 

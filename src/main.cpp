@@ -55,6 +55,9 @@ int main()
     // it's the object
     DB;
 
+    // Create Map
+    MAP;
+
     std::cout << "helo werl\n";
 
     return 0;
