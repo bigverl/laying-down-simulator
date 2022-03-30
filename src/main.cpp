@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Database.h"
 #include "Map.h"
 #include "Player.h"
@@ -6,8 +5,15 @@
 #include "Room.h"
 #include "UI.h"
 
+#include <iostream>
+
 int main()
 {
+
+    /**************************************************************************
+     * Declaration
+     **************************************************************************/
+
     // Enum outlining actions player can take
     enum Actions
     {
@@ -41,8 +47,15 @@ int main()
         ARG2
     };
 
-    std::cout
-        << "helo werl\n";
+    /**************************************************************************
+     * Program Start
+     **************************************************************************/
+
+    // Create database. When referring to DB calls, just use the term DB as if
+    // it's the object
+    DB;
+
+    std::cout << "helo werl\n";
 
     return 0;
 }
