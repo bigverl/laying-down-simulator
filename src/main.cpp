@@ -8,21 +8,23 @@
 
 int main()
 {
-    // Enum outlining commands. these are examples and should be customized for our actual game. probably goes in main
-    enum Commands
+    // Enum outlining actions player can take
+    enum Actions
     {
-        EXAMINE,
+        USE,
+        LOOK,
         GET,
         PUSH,
         PULL,
-        USE,
         TALK,
-        GIVE,
-        DROP,
+        OPEN,
+        CLOSE,
+        HELP,
         QUIT,
-        INVENTORY,
+        INVENTORY
     };
 
+    // Enum outlining directions players may move
     enum Directions
     {
         NORTH,
@@ -31,7 +33,16 @@ int main()
         EAST,
     };
 
-    std::cout << "helo werl\n";
+    // Enum representing command structure
+    enum Command
+    {
+        COMMAND,
+        ARG1,
+        ARG2
+    };
+
+    std::cout
+        << "helo werl\n";
 
     return 0;
 }
