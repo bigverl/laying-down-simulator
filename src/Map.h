@@ -1,10 +1,11 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <vector>
 #include "Room.h"
+#include <vector>
+#include <iostream>
 
-// This is a macro. You refer to the database instance as this name when programming
+// This is a macro. You refer to the Map instance as this name when programming
 #define MAP (Map::getInstance())
 
 /********************************************************************************************

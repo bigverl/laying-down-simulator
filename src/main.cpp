@@ -3,11 +3,10 @@
 #include "Player.h"
 #include "Prop.h"
 #include "Room.h"
-#include "UI.h"
-
+#include "UserInterface.h"
 #include <iostream>
 
-int main()
+int main(int argc, char *argv[])
 {
 
     /**************************************************************************
@@ -53,10 +52,20 @@ int main()
 
     // Create database. When referring to DB calls, just use the term DB as if
     // it's the object
-    DB;
+    DB;     // Create database
+    MAP;    // Create Map
+    UI;     // Create UI
+    PLAYER; // Create player
 
-    // Create Map
-    MAP;
+    // Get file path
+    DB.setFilePath(argv[0]);
+
+    // DEBUG START
+
+    DB.importProps();
+
+    // Import database
+    // DB.import();
 
     std::cout << "helo werl\n";
 

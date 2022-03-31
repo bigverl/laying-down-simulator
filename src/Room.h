@@ -20,7 +20,7 @@ class Room
 {
     // Attributes
     int id;                                    // id of room. its position in the rooms[] matrix
-    std::string name;                               // name of room
+    std::string name;                          // name of room
     std::string descriptionPic;                // ascii the reason these are separate is in case they change over course of gameplay
     std::string descriptionText;               // text	 the reason these are separate is in case they change over course of gameplay
     std::vector<int> *props;                   // array of interactables in the room (id's)
@@ -30,43 +30,28 @@ public:
     // Methods
 
     // Return room id
-    int getID() const
-    {
-        return 0;
-    }
+    int getID() const;
+
+    // Returns room name
+    std::string getName() const;
 
     // returns name of prop given its id (for use in player commands)
-    std::string findPropName(const int &propID)
-    {
-        return "";
-    }
+    std::string findPropName(const int &propID);
 
     // returns full list of room's props (ids)
-    std::vector<int> *getProps()
-    {
-        return nullptr;
-    }
+    std::vector<int> *getProps() const;
 
     // returns directions that player can move. will determine this by referencing adjacency matrix
-    std::vector<int> *getAdjacentCells()
-    {
-        return nullptr;
-    }
+    std::vector<int> *getAdjacentCells() const;
 
     // returns room description
-    std::string getDescription() const
-    {
-        return "";
-    }
+    std::string getDescription() const;
 
     // returns room pic in ascii
-    std::string getPic() const
-    {
-        return "";
-    }
+    std::string getPic() const;
 
     // Constructors
-    Room(){};
+    Room();
 };
 
 #endif // ROOM.H

@@ -1,11 +1,8 @@
 #include "Map.h"
 
-#include <iostream>
-
-
+// Creates one instance of Map. If one exists, it returns the existing one.
 Map &Map::getInstance()
 {
-    std::cout << "Map made lol";
     static Map instance;
     return instance;
 }

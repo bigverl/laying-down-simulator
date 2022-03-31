@@ -6,41 +6,94 @@ Database &Database::getInstance()
     return instance;
 }
 
-// TODO make sure proper csv file type is added to the params list
+// Set file path to location where database files exist
+void Database::setFilePath(const char *path)
+{
+    executablePath = std::filesystem::path(path);
+    executablePath.replace_filename("");
+    executablePath.append("db");
+}
+
+// Sets a file path to specific database file
+std::filesystem::path Database::createDBPath(const std::string fileName)
+{
+    std::filesystem::path pathToFile(DB.executablePath);
+    pathToFile.append(fileName);
+    return pathToFile;
+}
+
+// Import props file into memory
+void Database::importProps()
+{
+    std::filesystem::path propsPath(createDBPath("props-test.csv"));
+    std::string contents = readFileIntoString(propsPath);
+    std::cout << contents;
+}
+
 void Database::import()
 {
 }
 
-// TODO: Make sure this looks up and returns a prop by id. the placeholder Prop(); is just here to prevent
-// compile errors rn
-Prop Database::getProp(const int &id) const
+std::string Database::readFileIntoString(const std::string &path)
 {
-    return Prop();
+    auto ss = std::ostringstream{};
+    std::ifstream input_file(path);
+    if (!input_file.is_open())
+    {
+        std::cout << "Could not open the file - '" << path << "'" << std::endl;
+    }
+    else
+    {
+        std::cout << "Database file opened successfully\n";
+        ss << input_file.rdbuf();
+    }
+
+    return ss.str();
 }
 
-// TODO: Make sure this looks up and returns a room by id. the placeholder Prop(); is just here to prevent
-// compile errors rn
-Room Database::getRoom(const int &id) const
+// Return prop given id
+Prop *Database::getProp(const int &id) const
 {
-    return Room();
+    Prop *temp = nullptr;
+
+    for (unsigned long int index = 0; index < props->size(); index++)
+    {
+        if (props->at(index).getID() == id)
+        {
+            temp = &props->at(index);
+            return temp;
+        }
+    }
+
+    std::cout << "ERROR: PROP NOT FOUND";
+    return temp;
+}
+
+// Returns a room given id
+Room *Database::getRoom(const int &id) const
+{
+    Room *temp = nullptr;
+
+    for (unsigned long int index = 0; index < rooms->size(); index++)
+    {
+        if (rooms->at(index).getID() == id)
+        {
+            return temp = &rooms->at(index);
+        }
+    }
+
+    std::cout << "ERROR: ROOM NOT FOUND";
+    return temp;
 }
 
 // Retrieves prop name by id
 std::string Database::getPropName(const int &id) const
 {
-    int index = 0;
-    bool found = false;
-    while (!found && index < props->size())
+    for (unsigned long int index = 0; index < props->size(); index++)
     {
-        found = props->at(index).getID() != id;
-
-        if (found)
+        if (props->at(index).getID() == id)
         {
-            return props->at(index).getName()
-        }
-        else
-        {
-            index++;
+            return props->at(index).getName();
         }
     }
 
@@ -50,19 +103,11 @@ std::string Database::getPropName(const int &id) const
 // Returns room name given id
 std::string Database::getRoomName(const int &id) const
 {
-    int index = 0;
-    bool found = false;
-    while (!found && index < rooms.size())
+    for (unsigned long int index = 0; index < rooms->size(); index++)
     {
-        found = rooms.at(index).getID() != id;
-
-        if (found)
+        if (rooms->at(index).getID() == id)
         {
-            return rooms.at(index).getName();
-        }
-        else
-        {
-            index++;
+            return rooms->at(index).getName();
         }
     }
 
@@ -76,7 +121,7 @@ std::vector<Room> *Database::getRooms() const
 }
 
 // Returns pointer to all the props
-std::vector<Prop> *getProps() const
+std::vector<Prop> *Database::getProps() const
 {
     return props;
 }

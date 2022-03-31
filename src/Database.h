@@ -5,6 +5,10 @@
 #include "Room.h"
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <sstream>
+#include <filesystem>
 
 // This is a macro. You refer to the database instance as this name when programming
 #define DB (Database::getInstance())
@@ -23,8 +27,9 @@
 class Database
 {
     // Attributes
-    std::vector<Prop> *props; // Interactable objects in rooms
-    std::vector<Room> *rooms; // Locations in game
+    std::vector<Prop> *props;             // Interactable objects in rooms
+    std::vector<Room> *rooms;             // Locations in game
+    std::filesystem::path executablePath; // path to database
 
     // Methods
     Database() = default; // private constructor
@@ -32,6 +37,14 @@ class Database
 public:
     // Creates one instance of database. If one exists, it returns the existing one.
     static Database &getInstance();
+
+    // Set file path to open database files
+    void setFilePath(const char *path);
+
+    // Creates file path to specific database file
+    std::filesystem::path createDBPath(const std::string fileName);
+
+    void importProps();
 
     // imports db from csv. this is a very large operation that will populate a ton of objects and data.
     // basically, it will define the map's room array as a certain size and fill it with those numbers for reference
@@ -42,11 +55,13 @@ public:
     // TODO: Imports data from file to program memory.
     void import();
 
+    std::string readFileIntoString(const std::string &path);
+
     // TODO: Make sure this looks up and returns a prop by id. the placeholder Prop(); is just here to prevent compile errors rn
-    Prop getProp(const int &id) const;
+    Prop *getProp(const int &id) const;
 
     // TODO: Make sure this looks up and returns a room by id. the placeholder Prop(); is just here to prevent compile errors rn
-    Room getRoom(const int &id) const;
+    Room *getRoom(const int &id) const;
 
     std::string getPropName(const int &id) const;
 
