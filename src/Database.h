@@ -4,6 +4,7 @@
 #include "Prop.h"
 #include "Room.h"
 #include <vector>
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <vector>
