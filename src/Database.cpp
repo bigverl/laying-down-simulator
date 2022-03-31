@@ -30,6 +30,14 @@ void Database::importProps()
     std::cout << contents;
 }
 
+// Import props file into memory
+void Database::importRooms()
+{
+    std::filesystem::path propsPath(createDBPath("rooms-test.csv"));
+    std::string contents = readFileIntoString(propsPath);
+    std::cout << contents;
+}
+
 void Database::import()
 {
 }

@@ -44,7 +44,11 @@ public:
     // Creates file path to specific database file
     std::filesystem::path createDBPath(const std::string fileName);
 
+    // Helper function to import prop data from csv
     void importProps();
+
+    // Helper function to import room data from csv
+    void importRooms();
 
     // imports db from csv. this is a very large operation that will populate a ton of objects and data.
     // basically, it will define the map's room array as a certain size and fill it with those numbers for reference

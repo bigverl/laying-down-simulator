@@ -64,6 +64,8 @@ int main(int argc, char *argv[])
 
     DB.importProps();
 
+    DB.importRooms();
+
     // Import database
     // DB.import();
 
