@@ -1,8 +1,12 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <vector>
 #include "Room.h"
+#include <vector>
+#include <iostream>
+
+// This is a macro. You refer to the Map instance as this name when programming
+#define MAP (Map::getInstance())
 
 /********************************************************************************************
  * The 'Map' class contains all attributes and methods required to manage the map itself.
@@ -14,30 +18,18 @@ class Map
     std::vector<int> rooms; // reference table for rooms 0 to * based on their ID's(?).
     int playerPosition;     // id of current room player occupies. will change during movement
 
-    // TODO CONFIGURE THIS. IT WILL BE DIFFICULT
-    int adjMatrix[0][0]; // 2d array of size nxn where n is the number of rooms in game. represents room adjacency.
-                         // 0 for 'not connected'. 1 for 'connected'. prob needs to be dynamic glhf
-
-    static Map instance;
     // Methods
+    Map() = default; // private constructor
 
 public:
-    static Map getInstance(const std::vector<Room> rooms)
-    {
-        return instance;
-    }
+    // Creates one instance of database. If one exists, it returns the existing one.
+    static Map &getInstance();
 
-    // returns id of room player currently occupies
-    int getPlayerPosition()
-    {
-        return 0;
-    }
+    // Returns ID of room player currently occupies
+    int getPlayerPosition();
 
-    // returns id's of rooms adjacent to this one
-    std::vector<int> *getAdjacentRooms(const int &id)
-    {
-        return nullptr;
-    }
+    // Returns id's and directions of rooms adjacent given room ID
+    std::vector<int> *getAdjacentRooms(const int &id);
 
 private:
     Map(std::vector<Room>) {} // private constructor uses data from database to populate adjMatrix
