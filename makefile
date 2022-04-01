@@ -2,8 +2,13 @@ CXX ?= g++
 
 # path #
 SRC_PATH = src
+DB_PATH = db
 BUILD_PATH = build
 BIN_PATH = $(BUILD_PATH)/bin
+DB_BUILD_PATH = $(BIN_PATH)/db
+
+
+
 
 # executable # 
 BIN_NAME = lds
@@ -33,16 +38,20 @@ default_target: all
 .PHONY: dirs
 dirs:
 	@echo "Creating directories"
+	@echo cp /db/props-test.csv $(DB_PATH)/props-test.csv
 	@mkdir -p $(dir $(OBJECTS))
 	@mkdir -p $(BIN_PATH)
+	@mkdir -p $(DB_BUILD_PATH)
+	@cp $(DB_PATH)/props-test.csv $(DB_BUILD_PATH)/props-test.csv
+	@cp $(DB_PATH)/rooms-test.csv $(DB_BUILD_PATH)/rooms-test.csv
+	
 
 .PHONY: clean
 clean:
-	@echo "Deleting $(BIN_NAME) symlink"
-	@$(RM) $(BIN_NAME)
 	@echo "Deleting directories"
 	@$(RM) -r $(BUILD_PATH)
 	@$(RM) -r $(BIN_PATH)
+	@$(RM) -r $(DB_BUILD_PATH)
 
 # checks the executable and symlinks to the output
 .PHONY: all
