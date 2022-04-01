@@ -107,7 +107,8 @@ std::vector<std::string> *Database::split(std::string toSplit)
 // Import props file into memory
 void Database::importProps()
 {
-    // Initialize container to hold rows
+    // fee
+    //  Initialize container to hold rows
     std::map<int, std::vector<std::string>> propData; // Each row of csv
     char delimiter = '|';                             // Delimeter for parsing cells
     std::vector<std::string> *commandsRaw = nullptr;  // Commands to place in valid commands vector
