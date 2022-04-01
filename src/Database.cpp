@@ -110,13 +110,11 @@ void Database::importProps()
     // Initialize container to hold rows
     std::map<int, std::vector<std::string>> propData; // Each row of csv
     char delimiter = '|';                             // Delimeter for parsing cells
-    std::string commandString;                        // Commands in cell
     std::vector<std::string> *commandsRaw = nullptr;  // Commands to place in valid commands vector
-
-    std::vector<int> *commands = nullptr;
-    Prop *temp = nullptr;          // temp item to populate
-    std::vector<std::string> rows; // Entire row of data
-    std::string rowData;           // Raw data from row
+    std::vector<int> *commands = nullptr;             // Actual commands list to populate object
+    Prop *temp = nullptr;                             // temp item to populate
+    std::vector<std::string> rows;                    // Entire row of data
+    std::string rowData;                              // Raw data from row
 
     // Preprocessing: Construct commandProcessor
 
@@ -145,7 +143,7 @@ void Database::importProps()
     }
 
     // Split command cell and place in commands vector
-    commandsRaw = split(propData[4].at(P_VALID_COMMANDS));
+    commandsRaw = split(propData[1].at(P_VALID_COMMANDS));
     commands = new std::vector<int>;
     for (unsigned long int index = 0; index < commandsRaw->size(); index++)
     {
