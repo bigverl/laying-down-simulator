@@ -61,12 +61,11 @@ int main(int argc, char *argv[])
     DB.setFilePath(argv[0]);
 
     // DEBUG START
-
-    DB.importProps();
-
+    // DB.importProps();
     // DB.importRooms();
+    // DEBUG END
 
-    // Import database
+    // Import DB data into program
     // DB.import();
 
     std::cout << "helo werl\n";
