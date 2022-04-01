@@ -10,6 +10,7 @@
 #include <vector>
 #include <sstream>
 #include <filesystem>
+#include <ctype.h>
 
 // This is a macro. You refer to the database instance as this name when programming
 #define DB (Database::getInstance())
@@ -28,9 +29,10 @@
 class Database
 {
     // Attributes
-    std::vector<Prop> *props;             // Interactable objects in rooms
-    std::vector<Room> *rooms;             // Locations in game
-    std::filesystem::path executablePath; // path to database
+    std::vector<Prop> *props;                   // Interactable objects in rooms
+    std::vector<Room> *rooms;                   // Locations in game
+    std::filesystem::path executablePath;       // path to database
+    std::map<std::string, int> actionProcessor; // Command list to quickly search and return enum value
 
     // Methods
     Database() = default; // private constructor
@@ -39,11 +41,18 @@ public:
     // Creates one instance of database. If one exists, it returns the existing one.
     static Database &getInstance();
 
+    void initializeActionProcessor();
+
+    int parseAction(const std::string &toParse);
+
     // Set file path to open database files
     void setFilePath(const char *path);
 
     // Creates file path to specific database file
     std::filesystem::path createDBPath(const std::string fileName);
+
+    // Split string
+    std::vector<std::string> *split(std::string toSplit);
 
     // Helper function to import prop data from csv
     void importProps();
@@ -106,6 +115,21 @@ enum RoomsDB
     R_DESCRIPTION_TEXT_DEFAULT,
     R_DESCRIPTION_TEXT_SOLVED,
     R_DESCRIPTION_PIC
+};
+
+enum Actions
+{
+    USE,
+    LOOK,
+    GET,
+    PUSH,
+    PULL,
+    TALK,
+    OPEN,
+    CLOSE,
+    HELP,
+    QUIT,
+    INVENTORY
 };
 
 #endif

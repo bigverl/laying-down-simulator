@@ -57,11 +57,14 @@ int main(int argc, char *argv[])
     UI;     // Create UI
     PLAYER; // Create player
 
+    // Initialize Action Processor
+    DB.initializeActionProcessor();
+
     // Get file path
     DB.setFilePath(argv[0]);
 
     // DEBUG START
-    // DB.importProps();
+    DB.importProps();
     // DB.importRooms();
     // DEBUG END
 
