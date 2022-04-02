@@ -29,10 +29,12 @@
 class Database
 {
     // Attributes
-    std::vector<Prop> *props;                   // Interactable objects in rooms
-    std::vector<Room> *rooms;                   // Locations in game
-    std::filesystem::path executablePath;       // path to database
-    std::map<std::string, int> actionProcessor; // Command list to quickly search and return enum value
+    std::vector<Prop> *props;                      // Interactable objects in rooms
+    std::vector<Room> *rooms;                      // Locations in game
+    std::filesystem::path executablePath;          // path to database
+    std::map<std::string, int> actionProcessor;    // action list to quickly search and return enum value
+    std::map<std::string, int> adjacencyProcessor; // direction list to quickly search and return enum value
+    std::map<std::string, int> directionProcessor; // direction list to quickly search and return enum value
 
     // Methods
     Database() = default; // private constructor
@@ -41,9 +43,23 @@ public:
     // Creates one instance of database. If one exists, it returns the existing one.
     static Database &getInstance();
 
+    // Initializes action processing tool
     void initializeActionProcessor();
 
+    // Parses an action passed as string to int value to be used in enum
     int parseAction(const std::string &toParse);
+
+    // Initializes direction processing tool
+    void initializeDirectionProcessor();
+
+    // Initializes direction processing tool
+    void initializeAdjacencyProcessor();
+
+    // Parses a direction passed as string to int value to be used in enum
+    int parseAdjacency(const std::string &toParse);
+
+    // Parses a direction passed as string to int value to be used in enum
+    int parseDirection(const std::string &toParse);
 
     // Set file path to open database files
     void setFilePath(const char *path);
@@ -130,6 +146,15 @@ enum Actions
     HELP,
     QUIT,
     INVENTORY
+};
+
+// Enum outlining room adjacencies
+enum Adjacencies
+{
+    N,
+    W,
+    S,
+    E,
 };
 
 #endif

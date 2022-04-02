@@ -59,17 +59,13 @@ int main(int argc, char *argv[])
 
     // Initialize Action Processor
     DB.initializeActionProcessor();
+    DB.initializeAdjacencyProcessor();
 
     // Get file path
     DB.setFilePath(argv[0]);
 
-    // DEBUG START
-    DB.importProps();
-    // DB.importRooms();
-    // DEBUG END
-
     // Import DB data into program
-    // DB.import();
+    DB.import();
 
     std::cout << "helo werl\n";
 
