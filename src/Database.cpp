@@ -52,6 +52,7 @@ void Database::initializeActionProcessor()
         {"TALK", TALK},
         {"OPEN", OPEN},
         {"CLOSE", CLOSE},
+        {"SOLVE", SOLVE},
         {"HELP", HELP},
         {"QUIT", QUIT},
         {"INVENTORY", INVENTORY}};
@@ -161,7 +162,7 @@ void Database::importProps()
     Prop *prop = nullptr;                               // temp item to populate
 
     // Import raw csv data to string, store in stream for processing
-    std::filesystem::path propsPath(createDBPath("props-test.csv"));
+    std::filesystem::path propsPath(createDBPath("props.csv"));
     std::string fileContents = readFileIntoString(propsPath);
     std::istringstream sstream(fileContents);
 
@@ -275,7 +276,7 @@ void Database::importRooms()
     rooms = new std::vector<Room>; // Create rooms array
 
     // Import raw csv data to string, store in stream for processing
-    std::filesystem::path roomsPath(createDBPath("rooms-test.csv"));
+    std::filesystem::path roomsPath(createDBPath("rooms.csv"));
     std::string fileContents = readFileIntoString(roomsPath);
     std::istringstream sstream(fileContents);
 

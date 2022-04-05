@@ -143,6 +143,7 @@ enum Actions
     TALK,
     OPEN,
     CLOSE,
+    SOLVE,
     HELP,
     QUIT,
     INVENTORY

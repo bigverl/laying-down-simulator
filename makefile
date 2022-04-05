@@ -42,8 +42,8 @@ dirs:
 	@mkdir -p $(dir $(OBJECTS))
 	@mkdir -p $(BIN_PATH)
 	@mkdir -p $(DB_BUILD_PATH)
-	@cp $(DB_PATH)/props-test.csv $(DB_BUILD_PATH)/props-test.csv
-	@cp $(DB_PATH)/rooms-test.csv $(DB_BUILD_PATH)/rooms-test.csv
+	@cp $(DB_PATH)/props.csv $(DB_BUILD_PATH)/props.csv
+	@cp $(DB_PATH)/rooms.csv $(DB_BUILD_PATH)/rooms.csv
 	
 
 .PHONY: clean
