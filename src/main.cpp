@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     UI;     // Create UI
     PLAYER; // Create player
 
-    // Initialize Action Processor
+    // Initialize ProcessorS
     DB.initializeActionProcessor();
     DB.initializeAdjacencyProcessor();
 

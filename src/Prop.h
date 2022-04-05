@@ -23,7 +23,7 @@ class Prop
     std::string _lookDescription;     // String returned when player uses LOOK command
     std::string _useDescription;      // String returned when player successfully USES this prop
     std::string _blockerText;         // If this prop is a blocker, this will be returned when they attempt to move past without first SOLVING
-    std::string _successText;         // String returned when player successfully SOLVES with this prop
+    std::string _successText;         // String returned when player successfully SOLVES a puzzle using this prop
     std::string _talkText;            // String returned when player uses TALK command
     bool _expired;                    // Determines whether or not prop has been used to its fullest extent
 

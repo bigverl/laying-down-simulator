@@ -72,7 +72,8 @@ void Prop::print()
               << "BLOCKER TEXT: " << _blockerText << std::endl
               << "SUCCESS TEXT: " << _successText << std::endl
               << "TALK TEXT: " << _talkText << std::endl
-              << "EXPIRED: " << _expired << std::endl;
+              << "EXPIRED: " << _expired << std::endl
+              << std::endl;
 }
 
 // Full param constructor
