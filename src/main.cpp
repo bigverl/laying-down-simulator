@@ -50,24 +50,30 @@ int main(int argc, char *argv[])
      * Program Start
      **************************************************************************/
 
-    // Create database. When referring to DB calls, just use the term DB as if
-    // it's the object
+    // Create game object modules
     DB;     // Create database
     MAP;    // Create Map
     UI;     // Create UI
     PLAYER; // Create player
 
-    // Initialize ProcessorS
-    DB.initializeActionProcessor();
-    DB.initializeAdjacencyProcessor();
+    // Print start screen here. If player enters <enter> to start, load the rest of the game
+    // UI.mainMenu();
 
-    // Get file path
-    DB.setFilePath(argv[0]);
+    // UI.initializeGame();
 
-    // Import DB data into program
-    DB.import();
+    // UI.startGame()
 
-    std::cout << "helo werl\n";
+    // Initialize Database
+    DB.initializeActionProcessor();    // Player action processor
+    DB.initializeAdjacencyProcessor(); // Room adjacency processor
+    // DB.initializeDirectionProcessor();   // Player direction input processor
+    DB.setFilePath(argv[0]); // Set database file path
+    DB.import();             // Import DB data into program
+
+    //
+    std::string input = "";
+
+    std::cout << "Terminating Program.\n";
 
     return 0;
 }
