@@ -17,6 +17,9 @@ class Game
 {
     // Attributes
     int _playerPosition; // id of current room player occupies. will change during movement
+    bool _quit;          // governs whether or not player wishes to quit
+    bool _winStatus;     // determines if player has won
+    int _winRoom;        // roomID for post-final room
 
     // Methods
     Game() = default; // private constructor
@@ -28,10 +31,29 @@ public:
     // Returns ID of room player currently occupies
     int getPlayerPosition();
 
+    // Sets player position into a new room. Used for tracking movement and updating state
     void setPlayerPosition(const int &newPosition);
 
     // Initialize game
     void initialize(const char *path);
+
+    void mainMenu();
+
+    bool validateMainMenuOption(char validAr[], const int &arSize, char &charInput);
+
+    bool playerWon();
+
+    bool getQuitStatus();
+
+    void setQuitStatus(const bool &newStatus);
+    void printGameStatus();
+};
+
+enum MainMenuOptions
+{
+    M_START = 'S',
+    M_HELP = 'H',
+    M_QUIT = 'Q'
 };
 
 #endif

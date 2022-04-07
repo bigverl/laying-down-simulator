@@ -13,8 +13,9 @@ int main(int argc, char *argv[])
      **************************************************************************/
 
     std::cout << "Starting Program.\n";
-    LDS; // Create game object
 
+    // Create game object and initialize
+    LDS;
     LDS.initialize(argv[0]);
 
     std::cout << "Terminating Program.\n";
