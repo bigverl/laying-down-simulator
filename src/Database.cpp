@@ -238,7 +238,7 @@ void Database::importProps()
         props->push_back(*prop);
     }
 
-    // // DEBUG: Print the entire props array
+    // // // DEBUG: Print the entire props array
     // for (unsigned long int index = 0; index < props->size(); index++)
     // {
     //     std::cout << std::endl;

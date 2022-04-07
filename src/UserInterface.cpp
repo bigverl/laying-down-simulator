@@ -11,7 +11,7 @@ UserInterface &UserInterface::getInstance()
 // TODO: Prints room default description given a room's ID
 // Need to figure out how to differentiate between default desc and
 // alternate desc, tho
-void printDescription(const int &id)
+void UserInterface::printRoomDescription(const int &id)
 {
     // This is just how you'd likely get the room object. Gotta do the rest
     DB.getRoom(id);
@@ -19,20 +19,40 @@ void printDescription(const int &id)
 
 // prints the available navigation directions derived from room's id
 // compared to adj list
-void printNavigation(const int &id)
+void UserInterface::printNavigation(const int &id)
 {
 }
 
 // prints player inventory, probably also says 'press enter to continue'
 // then reprints current room
-void printPlayerInventory()
+void UserInterface::printPlayerInventory()
 {
 }
 
 // prints title screen
-void printTitleScreen()
+void UserInterface::printTitleScreen()
 {
 }
 
 // prints available commands
-void printCommands() {}
+void UserInterface::printCommands() {}
+
+// prints main menu
+void UserInterface::printMainMenu()
+{
+    std::cout << "This is the main menu placeholder.\n"
+              << "S: Start Game \n"
+              << "H: Open Help Screen \n"
+              << "Q: Quit Game \n\n";
+}
+
+void UserInterface::printHelp()
+{
+    // Placeholder start
+    std::cout << "This is a placeholder for HELP MENU\n";
+    // Placeholder end
+
+    std::cout << "Press <ENTER> to continue";
+    std::cin.ignore();               // Pause for <enter>
+    std::cout << "\033[2J\033[1;1H"; // Clear screen
+}

@@ -37,6 +37,11 @@ public:
 
     // prints available commands
     void printCommands();
+
+    // prints main menu
+    void printMainMenu();
+
+    void printHelp();
 };
 
 #endif
