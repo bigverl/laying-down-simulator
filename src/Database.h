@@ -11,6 +11,7 @@
 #include <sstream>
 #include <filesystem>
 #include <ctype.h>
+#include "Enums.h"
 
 // This is a macro. You refer to the database instance as this name when programming
 #define DB (Database::getInstance())
@@ -100,62 +101,6 @@ public:
     std::vector<Prop> *getProps() const;
 
     std::vector<Room> *getRooms() const;
-};
-
-// Enum represents database cell locations for props.csv
-enum PropsDB
-{
-    P_ID,
-    P_NAME,
-    P_PICKED_UP,
-    P_HOME_ROOM,
-    P_SOLUTION_ROOM,
-    P_SOLUTION_PROP,
-    P_BLOCKING_ROOM,
-    P_BLOCKING_PROP,
-    P_VALID_COMMANDS,
-    P_LOOK_DESCRIPTION,
-    P_USE_DESCRIPTION,
-    P_BLOCKER_TEXT,
-    P_SUCCESS_TEXT,
-    P_TALK_TEXT
-};
-
-// Enum represents database cell locations for rooms.csv
-enum RoomsDB
-{
-    R_ID,
-    R_NAME,
-    R_PROPS,
-    R_ADJACENT_CELLS,
-    R_DESCRIPTION_TEXT_DEFAULT,
-    R_DESCRIPTION_TEXT_SOLVED,
-    R_DESCRIPTION_PIC
-};
-
-enum Actions
-{
-    USE,
-    LOOK,
-    GET,
-    PUSH,
-    PULL,
-    TALK,
-    OPEN,
-    CLOSE,
-    SOLVE,
-    HELP,
-    QUIT,
-    INVENTORY
-};
-
-// Enum outlining room adjacencies
-enum Adjacencies
-{
-    N,
-    W,
-    S,
-    E,
 };
 
 #endif
