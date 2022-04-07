@@ -48,6 +48,8 @@ void UserInterface::printMainMenu()
 
 void UserInterface::printHelp()
 {
+    std::cout << "\033[2J\033[1;1H"; // Clear screen
+
     // Placeholder start
     std::cout << "This is a placeholder for HELP MENU\n";
     // Placeholder end

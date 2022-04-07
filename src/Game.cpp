@@ -158,6 +158,7 @@ void Game::printGameStatus()
 
 void Game::startAdventure()
 {
+    std::cout << "\033[2J\033[1;1H"; // Clear screen
     // Placeholder start
     std::cout << "This is a placeholder for START GAME\n";
     // Placeholder end
