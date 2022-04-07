@@ -48,7 +48,11 @@ void UserInterface::printMainMenu()
 
 void UserInterface::printHelp()
 {
+    // Placeholder start
     std::cout << "This is a placeholder for HELP MENU\n";
-    system("pause");
-    system("cls");
+    // Placeholder end
+
+    std::cout << "Press <ENTER> to continue";
+    std::cin.ignore();               // Pause for <enter>
+    std::cout << "\033[2J\033[1;1H"; // Clear screen
 }

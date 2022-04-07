@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "UserInterface.h"
 #include "Enums.h"
+#include <stdlib.h>
 
 // Creates one instance of Game. If one exists, it returns the existing one.
 Game &Game::getInstance()
@@ -67,7 +68,8 @@ void Game::mainMenu()
     // Main menu loop
     while (inMainMenu)
     {
-        system("cls");
+        // Clear screen
+        std::cout << "\033[2J\033[1;1H";
         invalidInput = true;
 
         while (invalidInput)
@@ -79,8 +81,9 @@ void Game::mainMenu()
             {
                 std::cout << "Invalid Input. Please use letters listed in menu."
                           << std::endl;
-                system("pause");
-                system("cls");
+                std::cout << "Press <ENTER> to continue";
+                std::cin.ignore();               // Pause for <enter>
+                std::cout << "\033[2J\033[1;1H"; // Clear screen
             }
         } // END while(invalidInput)
 
@@ -89,8 +92,7 @@ void Game::mainMenu()
         {
         case M_START:
             inMainMenu = false;
-            std::cout << "This is a placeholder for START GAME\n";
-            // Game.StartAdventure();
+            startAdventure();
             break;
         case M_QUIT:
             _quit = true;
@@ -152,4 +154,15 @@ void Game::printGameStatus()
     std::cout << "Win status: " << _winStatus << "\n";
     std::cout << "Win Room: " << _winRoom << "\n";
     std::cout << "\n";
+}
+
+void Game::startAdventure()
+{
+    // Placeholder start
+    std::cout << "This is a placeholder for START GAME\n";
+    // Placeholder end
+
+    std::cout << "Press <ENTER> to continue";
+    std::cin.ignore();               // Pause for <enter>
+    std::cout << "\033[2J\033[1;1H"; // Clear screen
 }

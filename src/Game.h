@@ -47,6 +47,7 @@ public:
 
     void setQuitStatus(const bool &newStatus);
     void printGameStatus();
+    void startAdventure();
 };
 
 enum MainMenuOptions
