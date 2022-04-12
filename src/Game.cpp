@@ -303,15 +303,18 @@ void Game::gameLoop()
             // Validate command
             invalidCommand = validateCommand();
 
+            // Parse action int from action string
+            action = DB.parseAction(_command->at(ACTION));
+
             // Validate action int and print error if unacceptable
             invalidAction = validateAction(action);
         }
 
         // Parse and validate action int for switch
 
-        // DEBUG
-        std::cout << "Full command:" << userInput << std::endl;
-        std::cout << "Action Int:" << action << std::endl;
+        // // DEBUG
+        // std::cout << "Full command:" << userInput << std::endl;
+        // std::cout << "Action Int:" << action << std::endl;
 
         // Process player command, and respond
         switch (action)
@@ -325,11 +328,13 @@ void Game::gameLoop()
             break;
         }
 
-        // Pause, reset
-        std::cout << std::endl;
-        std::cin.ignore();
-        CLEAR_SCREEN;
-
+        if (!_quit && !playerWon())
+        {
+            // Pause, reset
+            std::cout << std::endl;
+            std::cin.ignore();
+            CLEAR_SCREEN;
+        }
         // Pause, clear screen
 
         // Delete command
