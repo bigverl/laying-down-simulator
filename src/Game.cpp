@@ -63,7 +63,7 @@ void Game::mainMenu()
     while (inMainMenu)
     {
         // Clear screen
-        std::cout << "\033[2J\033[1;1H";
+        CLEAR_SCREEN;
         invalidInput = true;
 
         while (invalidInput)
@@ -148,7 +148,7 @@ void Game::validateQuitAttempt()
         std::cin.ignore(999, '\n');
         charInput = toupper(charInput);
 
-        validQuit == (charInput == 'Y' || charInput == 'N');
+        validQuit = (charInput == 'Y' || charInput == 'N');
     }
 
     if (charInput == 'Y')
