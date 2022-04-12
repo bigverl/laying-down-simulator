@@ -18,6 +18,10 @@ int main(int argc, char *argv[])
     LDS;
     LDS.initialize(argv[0]);
 
+    // TESTING START
+
+    // TESTING END
+
     std::cout << "Terminating Program.\n";
 
     return 0;

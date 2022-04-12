@@ -70,7 +70,7 @@ enum Directions
 // Enum representing command structure. Used to parse player input as commands
 enum Command
 {
-    COMMAND,
+    ACTION,
     ARG1,
     ARG2
 };

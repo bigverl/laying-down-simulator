@@ -1,6 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <stdlib.h>
+#include <iostream>
+#include <vector>
+
 // This is a macro. You refer to the database instance as this name when programming
 #define LDS (Game::getInstance())
 
@@ -16,10 +20,11 @@
 class Game
 {
     // Attributes
-    int _playerPosition; // id of current room player occupies. will change during movement
-    bool _quit;          // governs whether or not player wishes to quit
-    bool _winStatus;     // determines if player has won
-    int _winRoom;        // roomID for post-final room
+    int _playerPosition;                // id of current room player occupies. will change during movement
+    bool _quit;                         // governs whether or not player wishes to quit
+    bool _winStatus;                    // determines if player has won
+    int _winRoom;                       // roomID for post-final room
+    std::vector<std::string> *_command; // Command structure player uses to interact with game world
 
     // Methods
     Game() = default; // private constructor
@@ -37,17 +42,53 @@ public:
     // Initialize game
     void initialize(const char *path);
 
+    // Function governs main menu behavior
     void mainMenu();
 
+    // Validates main menu options as characters
     bool validateMainMenuOption(char validAr[], const int &arSize, char &charInput);
 
+    // Returns true if player has won the game
     bool playerWon();
 
+    // Returns whether or not player has decided to quit
     bool getQuitStatus();
 
+    // Helper function to set 'quit = true'
     void setQuitStatus(const bool &newStatus);
+
+    // Debug function to print stats associated with game state.
     void printGameStatus();
+
+    // This function starts the game when player selects this option from main menu
     void startAdventure();
+
+    // Parses a line of input into the command structure
+    std::vector<std::string> *getCommand(std::string &line);
+
+    // Split string
+    std::vector<std::string> *split(std::string toSplit);
+
+    // Validate character's attempts to quit game
+    void validateQuitAttempt();
+
+    // Validate player's ACTION input
+    bool validateAction();
+
+    // The primary game loop. Handles basically all the processing in the game
+    void gameLoop();
+
+    // Validates commands for correct number of arguments
+    bool validateCommand();
+
+    // Validate command for valid action (GET, etc)
+    bool validateAction(const int &actionToValidate);
+
+    // Gets player input to process into command
+    std::string getInput();
+
+    // Prints "press enter to continue, waits for enter"
+    void printPause();
 };
 
 enum MainMenuOptions

@@ -60,6 +60,11 @@ void Database::initializeActionProcessor()
 
 void Database::initializeDirectionProcessor()
 {
+    directionProcessor = {
+        {"NORTH", N},
+        {"WEST", W},
+        {"SOUTH", S},
+        {"EAST", E}};
 }
 
 int Database::parseDirection(const std::string &toParse)

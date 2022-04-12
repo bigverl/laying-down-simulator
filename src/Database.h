@@ -34,7 +34,7 @@ class Database
     std::vector<Room> *rooms;                      // Locations in game
     std::filesystem::path executablePath;          // path to database
     std::map<std::string, int> actionProcessor;    // action list to quickly search and return enum value
-    std::map<std::string, int> adjacencyProcessor; // direction list to quickly search and return enum value
+    std::map<std::string, int> adjacencyProcessor; // abbreviated direction list to quickly search and return enum value
     std::map<std::string, int> directionProcessor; // direction list to quickly search and return enum value
 
     // Methods
