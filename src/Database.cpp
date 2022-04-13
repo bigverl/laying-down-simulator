@@ -60,11 +60,34 @@ void Database::initializeActionProcessor()
 
 void Database::initializeDirectionProcessor()
 {
+    directionProcessor = {
+        {"NORTH", N},
+        {"WEST", W},
+        {"SOUTH", S},
+        {"EAST", E}};
 }
 
 int Database::parseDirection(const std::string &toParse)
 {
-    return 0;
+    std::string temp = toParse;
+    std::map<std::string, int>::iterator it;
+
+    // ToUpper the action
+    for (auto &c : temp)
+    {
+        c = (char)toupper(c);
+    }
+
+    // Find it
+    it = directionProcessor.find(temp);
+
+    // Return int
+    if (it == directionProcessor.end())
+    {
+        return -1;
+    }
+
+    return it->second;
 }
 
 // Initializes direction processing tool

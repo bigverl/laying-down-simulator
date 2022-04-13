@@ -5,6 +5,7 @@
 
 // This is a macro. You refer to the UserInterface instance as this name when programming
 #define UI (UserInterface::getInstance())
+#define CLEAR_SCREEN (std::cout << "\033[2J\033[1;1H")
 
 /*****************************************************************************************************
  * The 'UI' class governs printing output to screen. Follows singleton pattern. See Database class
