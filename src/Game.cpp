@@ -167,19 +167,16 @@ void Game::validateQuitAttempt()
     }
 }
 
+// Returns whether player has won
 bool Game::playerWon()
 {
     return _winRoom == _playerPosition;
 }
 
-bool Game::getQuitStatus()
+// Returns whether player has quit
+bool Game::playerQuit()
 {
     return _quit;
-}
-
-void Game::setQuitStatus(const bool &newStatus)
-{
-    _quit = newStatus;
 }
 
 // Debug
@@ -253,21 +250,6 @@ std::vector<std::string> *Game::getCommand(std::string &line)
         // std::cout << "Command string at index " << index << " is: " << command->at(index) << std::endl;
     }
 
-    // Pull action from command
-    if (command->size() > 0)
-    {
-    }
-    // If split vector > 0
-    // Match first arg with existing command or with cardinal direction
-    // Push it back
-
-    // If split vector >= 1
-    // place second arg
-
-    // If split vector >= 2
-    // place third arg
-
-    // return the split vector
     return command;
 }
 
@@ -275,108 +257,134 @@ std::vector<std::string> *Game::getCommand(std::string &line)
 void Game::gameLoop()
 {
     std::string userInput = ""; // Line of input
-    const std::string quitPrompt = "Are you sure you want to quit? Y/N: ";
-    int action = -1; // Action converted to int for switch. Starts out invalid
-    bool invalidCommand = true;
+    int action = -1;            // Action converted to int for switch. Starts out invalid
+    int direction = -1;         // Direction converted to int for switch. Starts out invalid
     bool invalidAction = true;
+    bool invalidMove = true;
+    bool invalidArgCount = true;
+    bool quitOrInv = true;
 
-    // Begin game loop
-    do
+    // Begin Game Loop
+    while (!playerQuit() && !playerWon())
     {
+        // DEBUG STUB
+        std::cout << "Welcome to the room description placeholder! \n";
+
+        // Print the room
+        // printRoom(ID);
+
         // Create new command
         _command = new std::vector<std::string>;
-        invalidCommand = true;
-        invalidAction = true;
-
-        // TODO printRoom(ID);
 
         // Get input, create command
         userInput = getInput();
         _command = getCommand(userInput);
 
-        // Validate command
-        invalidCommand = validateCommand();
+        // Validate number of arguments
+        invalidArgCount = validateCommandArgs();
 
-        // Parse action int from action string
-        action = DB.parseAction(_command->at(ACTION));
-
-        // Validate action int and print error if unacceptable
-        invalidAction = validateAction(action);
-
-        // Validate command for correct number of args
-        while (invalidCommand || invalidAction)
+        // If invalid, inform the player
+        if (invalidArgCount)
         {
-            // Get input, create command
-            userInput = getInput();
-            _command = getCommand(userInput);
+            std::cout << "Hey, I think you put too many arguments into that command. Try something else!\n";
+        }
+        else // Else, continue and determine if player is attempting to move
+        {
+            // DEBUG STUB
+            std::cout << "Yes, that is the correct number of arguments, debugger!\n";
 
-            // Validate command
-            invalidCommand = validateCommand();
+            // Player is attempting to move because they only input one argument
+            if (_command->size() == 1)
+            {
+                // Validate movement first by checking if they input a valid direction
+                direction = DB.parseDirection(_command->at(0));
+                invalidMove = validateDirection(direction);
 
-            // Parse action int from action string
-            action = DB.parseAction(_command->at(ACTION));
+                // If invalid, they may be attempting to access inventory or quit
+                if (invalidMove)
+                {
+                    action = DB.parseAction(_command->at(0));
+                    quitOrInv = (action == QUIT || action == INVENTORY);
 
-            // Validate action int and print error if unacceptable
-            invalidAction = validateAction(action);
+                    if (!quitOrInv)
+                    {
+                        std::cout << "Hmm. That doesn't seem to be a valid direction. Try another way.\n";
+                    }
+                    else // If it's quit or inventory, go ahead and send it through
+                    {
+                        invalidAction = executeAction(action);
+                    }
+                }
+                else // Else, go ahead and try to move
+                {
+                    // DEBUG STUB
+                    std::cout << "Yes, that was a valid direction, debugger!\n";
+
+                    // invalidMove = move(direction)
+
+                    // If it still doesn't work, that room doesn't have an exit in that direction
+                    // if(invalidMove)
+                    // {
+                    //     std::cout << "Weird, you don't see an exit in that direction. Maybe try a different path?\n";
+                    // }
+                }
+            }
+            else // Else, they're attempting to take an action
+            {
+                // Validate attempted action
+                action = DB.parseAction(_command->at(0));
+                invalidAction = validateAction(action);
+
+                if (invalidAction)
+                {
+                    std::cout << "Hey, that's not a valid action. Try something else!\n";
+                }
+                else // Else, go ahead and try to execute the action
+                {
+                    // DEBUG STUB
+                    std::cout << "Yes, that is a valid action, debugger!\n";
+                    // invalidAction = execute(action);
+                }
+            }
         }
 
-        // Parse and validate action int for switch
+        // Delete old command
+        delete _command;
 
-        // // DEBUG
-        // std::cout << "Full command:" << userInput << std::endl;
-        // std::cout << "Action Int:" << action << std::endl;
-
-        // Process player command, and respond
-        switch (action)
+        if (!playerQuit())
         {
-        case QUIT:
-            validateQuitAttempt();
-            break;
-        default:
-            std::cout << "That is not a valid command. Please try again\n";
             printPause();
-            break;
-        }
-
-        if (!_quit && !playerWon())
-        {
-            // Pause, reset
             CLEAR_SCREEN;
         }
-
-        // Delete command
-        delete _command;
-    } while (!_quit && !playerWon());
+        // Game will check for win or quit condition here
+    }
 }
 
-bool Game::validateCommand()
+// Validates overall command for correct number of arguments
+bool Game::validateCommandArgs()
 {
-    // Inform player
-    if (_command->size() > 3)
-    {
-        std::cout << "Invalid command: Too many arguments.\n";
-        printPause();
-        CLEAR_SCREEN;
-    }
-
     return (_command->size() > 3);
 }
 
+// Validates player attempting to use an action command
 bool Game::validateAction(const int &actionToValidate)
 {
+    // -1 is the value returned by the actionProcessor when it cannot find a match
     const int INVALID_ACTION_VALUE = -1;
-    bool invalidAction = actionToValidate == INVALID_ACTION_VALUE;
 
-    if (invalidAction)
-    {
-        std::cout << "Invalid command: Action invalid.\n";
-        printPause();
-        CLEAR_SCREEN;
-    }
-
-    return invalidAction;
+    return actionToValidate == INVALID_ACTION_VALUE;
 }
 
+// Validates player attempting to enter directional movement command
+bool Game::validateDirection(const int &directionToValidate)
+{
+    // -1 is the value returned by the directionProcessor when it cannot find a match
+    const int INVALID_DIRECTION_VALUE = -1;
+
+    return directionToValidate == INVALID_DIRECTION_VALUE;
+}
+
+// Gets player input
 std::string Game::getInput()
 {
     std::string userInput = "";
@@ -390,4 +398,31 @@ void Game::printPause()
 {
     std::cout << "Press <ENTER> to continue";
     std::cin.ignore(); // Pause for <enter>
+}
+
+// This governs executing actions such as GET, PUSH, PULL, etc
+// Must return false if successful
+bool Game::executeAction(const int &action)
+{
+    switch (action)
+    {
+    case QUIT:
+        validateQuitAttempt();
+        break;
+    default:
+        // std::cout << "That is not a valid command. Please try again\n";
+        break;
+    }
+}
+
+// This governs player movement such as NORTH, SOUTH, EAST, WEST
+// Must return false if successful
+bool Game::attemptMove(const int &direction)
+{
+    return false;
+}
+
+// This is a helper function to move the player. Used for debugging, mostly
+void Game::movePlayer(const int &roomID)
+{
 }

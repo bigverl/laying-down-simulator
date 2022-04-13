@@ -48,11 +48,8 @@ public:
     // Returns true if player has won the game
     bool playerWon();
 
-    // Returns whether or not player has decided to quit
-    bool getQuitStatus();
-
-    // Helper function to set 'quit = true'
-    void setQuitStatus(const bool &newStatus);
+    // Returns true if player has chosen to quit the game
+    bool playerQuit();
 
     // Debug function to print stats associated with game state.
     void printGameStatus();
@@ -77,7 +74,7 @@ public:
 
     // ***** Validators ***** //
     // Validates commands for correct number of arguments
-    bool validateCommand();
+    bool validateCommandArgs();
 
     // Validate command for valid action (GET, etc)
     bool validateAction(const int &actionToValidate);
@@ -88,8 +85,22 @@ public:
     // Validate player's ACTION input
     bool validateAction();
 
+    // Validates directional input
+    bool validateDirection(const int &directionToValidate);
+
     // Validates main menu options as characters
     bool validateMainMenuOption(char userInput);
+
+    // This governs executing actions such as GET, PUSH, PULL, etc
+    // Must return false if successful
+    bool executeAction(const int &action);
+
+    // This governs player movement such as NORTH, SOUTH, EAST, WEST
+    // Must return false if successful
+    bool attemptMove(const int &direction);
+
+    // This is a helper function to move the player. Used for debugging, mostly
+    void movePlayer(const int &roomID);
 };
 
 enum MainMenuOptions
