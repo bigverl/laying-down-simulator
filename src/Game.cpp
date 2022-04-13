@@ -52,12 +52,10 @@ void Game::initialize(const char *path)
 void Game::mainMenu()
 {
     // Initialize menu variables
-    const int inputArSize = 3;
-    char inputAr[inputArSize] = {'S', 'H', 'Q'};
     bool invalidInput = true;
     bool inMainMenu = true;
-    char mainMenuOption;
-    const std::string PROMPT = "Choice: ";
+    char charInput;
+    int menuChoice = -1;
 
     // Main menu loop
     while (inMainMenu)
@@ -66,11 +64,18 @@ void Game::mainMenu()
         CLEAR_SCREEN;
         invalidInput = true;
 
+        // Validate input
         while (invalidInput)
         {
-            // Input
-            invalidInput = validateMainMenuOption(inputAr, inputArSize,
-                                                  mainMenuOption);
+            // Output menu
+            UI.printMainMenu();
+
+            // Get user input
+            std::cout << "Choice: ";
+            std::cin.get(charInput);
+
+            invalidInput = validateMainMenuOption(charInput);
+
             if (invalidInput)
             {
                 std::cout << "Invalid Input. Please use letters listed in menu."
@@ -78,10 +83,14 @@ void Game::mainMenu()
                 printPause();
                 CLEAR_SCREEN;
             }
+
         } // END while(invalidInput)
 
+        // If it's valid, we're all good.
+        menuChoice = toupper(charInput);
+
         // Menu Switch
-        switch (mainMenuOption)
+        switch (menuChoice)
         {
         case M_START:
             inMainMenu = false;
@@ -100,24 +109,17 @@ void Game::mainMenu()
     } // END while(inMainMenu)
 }
 
-bool Game::validateMainMenuOption(char validAr[], const int &arSize, char &charInput)
+bool Game::validateMainMenuOption(char userInput)
 {
     bool invalidInput = true;
-    int index = 0;
 
-    // Output
-    UI.printMainMenu();
-
-    // Input
-    std::cin.get(charInput);
-    std::cin.ignore(999, '\n');
-    charInput = toupper(charInput);
-
-    // Compare to valid array
-    while (index < arSize && invalidInput)
+    // ToUpper input if it's not newline
+    if (userInput != '\n')
     {
-        invalidInput = charInput != validAr[index];
-        index++;
+        std::cin.ignore(999, '\n');
+        userInput = toupper(userInput);
+
+        invalidInput = (userInput != 'S' && userInput != 'H' && userInput != 'Q');
     }
 
     return invalidInput;
@@ -133,10 +135,14 @@ void Game::validateQuitAttempt()
 
     // Input, toUpper
     std::cin.get(charInput);
-    std::cin.ignore(999, '\n');
-    charInput = toupper(charInput);
 
-    validQuit = (charInput == 'Y' || charInput == 'N');
+    if (charInput != '\n')
+    {
+        std::cin.ignore(999, '\n');
+        charInput = toupper(charInput);
+
+        validQuit = (charInput == 'Y' || charInput == 'N');
+    }
 
     while (!validQuit)
     {
@@ -145,10 +151,14 @@ void Game::validateQuitAttempt()
                   << "Are you sure you want to quit? Y/N: ";
         // Input, toUpper
         std::cin.get(charInput);
-        std::cin.ignore(999, '\n');
-        charInput = toupper(charInput);
 
-        validQuit = (charInput == 'Y' || charInput == 'N');
+        if (charInput != '\n')
+        {
+            std::cin.ignore(999, '\n');
+            charInput = toupper(charInput);
+
+            validQuit = (charInput == 'Y' || charInput == 'N');
+        }
     }
 
     if (charInput == 'Y')
@@ -331,11 +341,8 @@ void Game::gameLoop()
         if (!_quit && !playerWon())
         {
             // Pause, reset
-            std::cout << std::endl;
-            std::cin.ignore();
             CLEAR_SCREEN;
         }
-        // Pause, clear screen
 
         // Delete command
         delete _command;
