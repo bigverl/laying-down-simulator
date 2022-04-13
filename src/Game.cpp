@@ -304,7 +304,7 @@ void Game::gameLoop()
                 if (invalidMove)
                 {
                     action = DB.parseAction(_command->at(0));
-                    quitOrInv = (action == QUIT || action == INVENTORY);
+                    quitOrInv = (action == QUIT || action == INVENTORY || action == HELP);
 
                     if (!quitOrInv)
                     {
