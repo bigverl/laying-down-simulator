@@ -21,17 +21,23 @@ std::string Room::findPropName(const int &propID)
 // TODO: returns full list of room's props (ids)
 std::vector<int> *Room::getProps() const
 {
-    return nullptr;
+    return _props;
 }
 
 // TODO: returns directions that player can move. will determine this by referencing adjacency matrix
-std::vector<int> *Room::getAdjacentCells() const
+std::vector<AdjacentRoom> *Room::getAdjacentRooms() const
 {
-    return nullptr;
+    return _adjacentRooms;
 }
 
 // TODO: returns room description
-std::string Room::getDescription() const
+std::string Room::getDescriptionTextDefault() const
+{
+    return "";
+}
+
+// TODO: returns room description
+std::string Room::getDescriptionTextSolved() const
 {
     return "";
 }

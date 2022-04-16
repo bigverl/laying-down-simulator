@@ -484,3 +484,55 @@ std::vector<Prop> *Database::getProps() const
 {
     return props;
 }
+
+// Gets prop in origin that blocks destination. Returns -1 if nothing blocking
+int Database::getBlockingPropID(const int &origin, const int &destination)
+{
+    // Get the props in this room
+    std::vector<int> *propsInRoom = getRooms()->at(origin).getProps();
+    bool found = false;
+    unsigned long int index = 0;
+    int blockingPropID = -1;
+    int blockedRoom = -1;
+
+    // Get the one that's blocking the given room ID
+    while (!found && index < propsInRoom->size())
+    {
+        blockedRoom = getProps()->at(propsInRoom->at(index)).getBlockingRoom();
+        found = (destination == blockedRoom);
+
+        if (found)
+        {
+            blockingPropID = getProps()->at(propsInRoom->at(index)).getID();
+        }
+
+        index++;
+    }
+
+    // Return its ID
+    return blockingPropID;
+}
+
+// Debug: Returns ID for room adjacent to room ID and direction given. Returns -1 if invalid
+int Database::getAdjacentRoomID(const int &origin, const int &direction)
+{
+    // search origin room's adjacencies, return the one in given direction
+    std::vector<AdjacentRoom> *tempAdjacencies = getRooms()->at(origin).getAdjacentRooms();
+    unsigned long int index = 0;
+    bool found = false;
+    int adjacentRoomID = -1;
+
+    while (!found && index < tempAdjacencies->size())
+    {
+        found = (direction == tempAdjacencies->at(index)._direction);
+
+        if (found)
+        {
+            adjacentRoomID = tempAdjacencies->at(index)._roomID;
+        }
+
+        index++;
+    }
+
+    return adjacentRoomID;
+}

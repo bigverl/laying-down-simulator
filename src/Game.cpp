@@ -20,9 +20,9 @@ int Game::getPlayerPosition()
 }
 
 // Sets player position when player moves
-void Game::setPlayerPosition(const int &newPosition)
+void Game::setPlayerPosition(const int &roomID)
 {
-    _playerPosition = newPosition;
+    _playerPosition = roomID;
 }
 
 void Game::initialize(const char *path)
@@ -97,7 +97,7 @@ void Game::mainMenu()
             startAdventure();
             break;
         case M_QUIT:
-            _quit = true;
+            _quitStatus = true;
             inMainMenu = false;
             break;
         case M_HELP:
@@ -163,7 +163,7 @@ void Game::validateQuitAttempt()
 
     if (charInput == 'Y')
     {
-        _quit = true;
+        _quitStatus = true;
     }
 }
 
@@ -176,7 +176,7 @@ bool Game::playerWon()
 // Returns whether player has quit
 bool Game::playerQuit()
 {
-    return _quit;
+    return _quitStatus;
 }
 
 // Debug
@@ -184,7 +184,7 @@ void Game::printGameStatus()
 {
     std::cout << "\n";
     std::cout << "Current Player Position: " << _playerPosition << "\n";
-    std::cout << "Quit Status: " << _quit << "\n";
+    std::cout << "Quit Status: " << _quitStatus << "\n";
     std::cout << "Win status: " << _winStatus << "\n";
     std::cout << "Win Room: " << _winRoom << "\n";
     std::cout << "\n";
@@ -232,7 +232,7 @@ std::vector<std::string> *Game::split(std::string toSplit)
 }
 
 // Parses a line of input into the command structure
-std::vector<std::string> *Game::getCommand(std::string &line)
+std::vector<std::string> *Game::getCommand(std::string line)
 {
     // Split line
     std::vector<std::string> *command = split(line);
@@ -261,16 +261,20 @@ void Game::gameLoop()
     int direction = -1;         // Direction converted to int for switch. Starts out invalid
     bool invalidAction = true;
     bool invalidMove = true;
+    bool invalidRoomExit = true;
+    bool exitBlocked = true;
     bool invalidArgCount = true;
-    bool quitOrInv = true;
+    bool quitOrInvOrHelp = true;
 
     // Begin Game Loop
     while (!playerQuit() && !playerWon())
     {
         // DEBUG STUB
-        std::cout << "Welcome to the room description placeholder! \n";
+        std::cout << "Welcome to the room description placeholder! You're currently in room: #" << getPlayerPosition() << std::endl;
+        std::cout << "Printing Current Room: \n";
+        DB.getRooms()->at(getPlayerPosition()).print();
 
-        // Print the room
+        // Print the room's pic and description
         // printRoom(ID);
 
         // Create new command
@@ -281,7 +285,7 @@ void Game::gameLoop()
         _command = getCommand(userInput);
 
         // Validate number of arguments
-        invalidArgCount = validateCommandArgs();
+        invalidArgCount = hasInvalidCommandArgs();
 
         // If invalid, inform the player
         if (invalidArgCount)
@@ -298,15 +302,15 @@ void Game::gameLoop()
             {
                 // Validate movement first by checking if they input a valid direction
                 direction = DB.parseDirection(_command->at(0));
-                invalidMove = validateDirection(direction);
+                invalidMove = isInvalidDirection(direction);
 
                 // If invalid, they may be attempting to access inventory or quit
                 if (invalidMove)
                 {
                     action = DB.parseAction(_command->at(0));
-                    quitOrInv = (action == QUIT || action == INVENTORY);
+                    quitOrInvOrHelp = (action == QUIT || action == INVENTORY || action == HELP);
 
-                    if (!quitOrInv)
+                    if (!quitOrInvOrHelp)
                     {
                         std::cout << "Hmm. That doesn't seem to be a valid direction. Try another way.\n";
                     }
@@ -315,25 +319,60 @@ void Game::gameLoop()
                         invalidAction = executeAction(action);
                     }
                 }
-                else // Else, go ahead and try to move
+                else // Else, the direction is theoretically valid. Now check for valid exit and blocking prop
                 {
                     // DEBUG STUB
-                    std::cout << "Yes, that was a valid direction, debugger!\n";
+                    std::cout << "Yes, that was a valid direction, debugger! The direction you entered was: " << direction << ".\n";
 
-                    // invalidMove = move(direction)
+                    invalidRoomExit = isInvalidExit(direction);
 
                     // If it still doesn't work, that room doesn't have an exit in that direction
-                    // if(invalidMove)
-                    // {
-                    //     std::cout << "Weird, you don't see an exit in that direction. Maybe try a different path?\n";
-                    // }
+                    if (invalidRoomExit)
+                    {
+                        std::cout << "Weird, you don't see an exit in that direction. Maybe try a different path?\n";
+                    }
+                    else // Else, check to see if a prop is blocking that exit
+                    {
+                        // DEBUG STUB. COMMENT THIS OUT
+                        int origin = DB.getRooms()->at(getPlayerPosition()).getID();
+                        int adjacentRoomID = DB.getAdjacentRoomID(origin, direction);
+                        std::cout << "Yes, an exit exists in that direction, debugger! Here's the information for that room:\n"
+                                  << "Room ID:" << DB.getRooms()->at(adjacentRoomID).getID() << "\n"
+                                  << "Room Name: " << DB.getRooms()->at(adjacentRoomID).getName() << "\n";
+                        // END DEBUG STUB
+
+                        exitBlocked = exitIsBlocked(direction);
+
+                        if (exitBlocked)
+                        {
+                            // Get blockingprop ID
+                            int currentRoom = DB.getRooms()->at(getPlayerPosition()).getID();
+                            int destination = DB.getAdjacentRoomID(currentRoom, direction);
+                            int blockingPropID = DB.getBlockingPropID(currentRoom, destination);
+
+                            // DEBUG STUB:
+                            std::cout << "Yes, a prop is blocking that exit, debugger! Here's the information for that prop:\n "
+                                      << "Prop ID: " << blockingPropID << "\n"
+                                      << "Prop Name: " << DB.getProps()->at(blockingPropID).getName() << "\n";
+                            // END DEBUG STUB
+
+                            // Print the blocking prop's blocker message
+                            std::cout << DB.getProps()->at(blockingPropID).getBlockerText() << "\n";
+                        }
+                        else // If none of the above, we're good to move
+                        {
+                            // DEBUG STUB:
+                            std::cout << "Congratulations, debugger. You moved!\n";
+                            // movePlayer();
+                        }
+                    }
                 }
             }
             else // Else, they're attempting to take an action
             {
                 // Validate attempted action
                 action = DB.parseAction(_command->at(0));
-                invalidAction = validateAction(action);
+                invalidAction = isInvalidAction(action);
 
                 if (invalidAction)
                 {
@@ -348,9 +387,6 @@ void Game::gameLoop()
             }
         }
 
-        // Delete old command
-        delete _command;
-
         if (!playerQuit())
         {
             printPause();
@@ -360,14 +396,46 @@ void Game::gameLoop()
     }
 }
 
+// Returns true if object is blocking exit
+bool Game::exitIsBlocked(const int &direction)
+{
+    const int BLOCKED_EXIT_VALUE = -1;
+    // Get blockingprop ID
+    int currentRoom = DB.getRooms()->at(getPlayerPosition()).getID();
+    int destination = DB.getAdjacentRoomID(currentRoom, direction);
+    int blockingPropID = DB.getBlockingPropID(currentRoom, destination);
+
+    return blockingPropID != BLOCKED_EXIT_VALUE;
+}
+
+// Returns true if exit does not exist in given direction
+bool Game::isInvalidExit(const int &direction)
+{
+    bool invalidRoomExit = true;
+    unsigned long int index = 0;
+
+    // Get adjacent rooms
+    std::vector<AdjacentRoom> *adjacentRooms = nullptr;
+    adjacentRooms = DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms();
+
+    // Check if exit exists in player's desired direction
+    while (invalidRoomExit && index < adjacentRooms->size())
+    {
+        invalidRoomExit = (direction != adjacentRooms->at(index)._direction);
+        index++;
+    }
+
+    return invalidRoomExit;
+}
+
 // Validates overall command for correct number of arguments
-bool Game::validateCommandArgs()
+bool Game::hasInvalidCommandArgs()
 {
     return (_command->size() > 3);
 }
 
 // Validates player attempting to use an action command
-bool Game::validateAction(const int &actionToValidate)
+bool Game::isInvalidAction(const int &actionToValidate)
 {
     // -1 is the value returned by the actionProcessor when it cannot find a match
     const int INVALID_ACTION_VALUE = -1;
@@ -376,7 +444,7 @@ bool Game::validateAction(const int &actionToValidate)
 }
 
 // Validates player attempting to enter directional movement command
-bool Game::validateDirection(const int &directionToValidate)
+bool Game::isInvalidDirection(const int &directionToValidate)
 {
     // -1 is the value returned by the directionProcessor when it cannot find a match
     const int INVALID_DIRECTION_VALUE = -1;
@@ -413,16 +481,4 @@ bool Game::executeAction(const int &action)
         // std::cout << "That is not a valid command. Please try again\n";
         break;
     }
-}
-
-// This governs player movement such as NORTH, SOUTH, EAST, WEST
-// Must return false if successful
-bool Game::attemptMove(const int &direction)
-{
-    return false;
-}
-
-// This is a helper function to move the player. Used for debugging, mostly
-void Game::movePlayer(const int &roomID)
-{
 }

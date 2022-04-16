@@ -21,7 +21,7 @@ class Game
 {
     // Attributes
     int _playerPosition;                // id of current room player occupies. will change during movement
-    bool _quit;                         // governs whether or not player wishes to quit
+    bool _quitStatus;                   // governs whether or not player wishes to quit
     bool _winStatus;                    // determines if player has won
     int _winRoom;                       // roomID for post-final room
     std::vector<std::string> *_command; // Command structure player uses to interact with game world
@@ -37,7 +37,7 @@ public:
     int getPlayerPosition();
 
     // Sets player position into a new room. Used for tracking movement and updating state
-    void setPlayerPosition(const int &newPosition);
+    void setPlayerPosition(const int &roomID);
 
     // Initialize game
     void initialize(const char *path);
@@ -58,13 +58,17 @@ public:
     void startAdventure();
 
     // Parses a line of input into the command structure
-    std::vector<std::string> *getCommand(std::string &line);
+    std::vector<std::string> *getCommand(std::string line);
 
     // Split string
     std::vector<std::string> *split(std::string toSplit);
 
     // The primary game loop. Handles basically all the processing in the game
     void gameLoop();
+
+    // This governs executing actions such as GET, PUSH, PULL, etc
+    // Must return false if successful
+    bool executeAction(const int &action);
 
     // Gets player input to process into command
     std::string getInput();
@@ -74,10 +78,10 @@ public:
 
     // ***** Validators ***** //
     // Validates commands for correct number of arguments
-    bool validateCommandArgs();
+    bool hasInvalidCommandArgs();
 
     // Validate command for valid action (GET, etc)
-    bool validateAction(const int &actionToValidate);
+    bool isInvalidAction(const int &actionToValidate);
 
     // Validate character's attempts to quit game
     void validateQuitAttempt();
@@ -86,21 +90,16 @@ public:
     bool validateAction();
 
     // Validates directional input
-    bool validateDirection(const int &directionToValidate);
+    bool isInvalidDirection(const int &directionToValidate);
 
     // Validates main menu options as characters
     bool validateMainMenuOption(char userInput);
 
-    // This governs executing actions such as GET, PUSH, PULL, etc
-    // Must return false if successful
-    bool executeAction(const int &action);
+    // Returns true if room does not have an exit in given direction
+    bool isInvalidExit(const int &direction);
 
-    // This governs player movement such as NORTH, SOUTH, EAST, WEST
-    // Must return false if successful
-    bool attemptMove(const int &direction);
-
-    // This is a helper function to move the player. Used for debugging, mostly
-    void movePlayer(const int &roomID);
+    // Returns true if exit is blocked
+    bool exitIsBlocked(const int &direction);
 };
 
 enum MainMenuOptions

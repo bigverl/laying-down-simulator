@@ -50,10 +50,13 @@ public:
     std::vector<int> *getProps() const;
 
     // returns directions that player can move. will determine this by referencing adjacency matrix
-    std::vector<int> *getAdjacentCells() const;
+    std::vector<AdjacentRoom> *getAdjacentRooms() const;
 
-    // returns room description
-    std::string getDescription() const;
+    // returns room default description
+    std::string getDescriptionTextDefault() const;
+
+    // returns room description after one 'solve' (optional)
+    std::string getDescriptionTextSolved() const;
 
     // returns room pic in ascii
     std::string getPic() const;

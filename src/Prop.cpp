@@ -48,6 +48,18 @@ void Prop::expire()
     _expired = true;
 }
 
+// Returns ID of room this prop is blocking
+int Prop::getBlockingRoom() const
+{
+    return _blockingRoom;
+}
+
+// Returns text this prop should display when it blocks player
+std::string Prop::getBlockerText() const
+{
+    return _blockerText;
+}
+
 // Print for debug
 void Prop::print()
 {
@@ -77,7 +89,7 @@ void Prop::print()
 }
 
 // Full param constructor
-Prop::Prop(const int &id, const std::string name, const bool &pickedUp, const int &homeRoom, const int &solutionRoom, const int &solutionProp,
+Prop::Prop(const int &id, const std::string &name, const bool &pickedUp, const int &homeRoom, const int &solutionRoom, const int &solutionProp,
            const int &blockingRoom, const int &blockingProp, std::vector<int> *validCommands, const std::string &lookDescription,
            const std::string &useDescription, const std::string &blockerText, const std::string &successText, const std::string &talkText)
 {
