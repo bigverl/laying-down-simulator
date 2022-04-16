@@ -333,14 +333,20 @@ void Game::gameLoop()
                     }
                     else // Else, check to see if a prop is blocking that exit
                     {
-                        // DEBUG STUB. COMMENT THIS OUT
-                        int origin = DB.getRooms()->at(getPlayerPosition()).getID();
-                        int adjacentRoomID = DB.getAdjacentRoomID(origin, direction);
-                        std::cout << "Yes, an exit exists in that direction, debugger! Here's the information for that room:\n"
-                                  << "Room ID:" << DB.getRooms()->at(adjacentRoomID).getID() << "\n"
-                                  << "Room Name: " << DB.getRooms()->at(adjacentRoomID).getName() << "\n";
-                        // END DEBUG STUB
+                        // // DEBUG STUB. COMMENT THIS OUT
+                        // int origin = DB.getRooms()->at(getPlayerPosition()).getID();
+                        // int adjacentRoomID = DB.getAdjacentRoomID(origin, direction);
+                        // std::cout << "Yes, an exit exists in that direction, debugger! Here's the information for that room:\n"
+                        //           << "Room ID:" << DB.getRooms()->at(adjacentRoomID).getID() << "\n"
+                        //           << "Room Name: " << DB.getRooms()->at(adjacentRoomID).getName() << "\n";
+                        // // END DEBUG STUB
 
+                        // // DEBUG STUB: DELETE THIS WHEN DONE DEBUGGING MOVEMENT
+                        // int blockingPropID = DB.getBlockingPropID(origin, adjacentRoomID);
+                        // DB.getProps()->at(blockingPropID).expire();
+                        // // END DEBUG STUB
+
+                        // Checks to see if unexpired blocking prop is blocking exit
                         exitBlocked = exitIsBlocked(direction);
 
                         if (exitBlocked)
@@ -404,6 +410,13 @@ bool Game::exitIsBlocked(const int &direction)
     int currentRoom = DB.getRooms()->at(getPlayerPosition()).getID();
     int destination = DB.getAdjacentRoomID(currentRoom, direction);
     int blockingPropID = DB.getBlockingPropID(currentRoom, destination);
+    bool blockingPropExpired = DB.getProps()->at(blockingPropID).isExpired();
+
+    // If the prop is expired, it is no longer blocking.
+    if (blockingPropExpired)
+    {
+        return false;
+    }
 
     return blockingPropID != BLOCKED_EXIT_VALUE;
 }

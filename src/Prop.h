@@ -41,6 +41,9 @@ public:
     // Returns true if item is in its original room
     bool inHomeRoom() const;
 
+    // Returns true if prop is expired
+    bool isExpired() const;
+
     // Returns ID room where this item needs to be used
     int getSolutionRoomID() const;
 

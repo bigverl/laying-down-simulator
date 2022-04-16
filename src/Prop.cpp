@@ -42,6 +42,12 @@ std::vector<int> *Prop::getValidCommands() const
     return _validCommands;
 }
 
+// Returns true if prop is expired
+bool Prop::isExpired() const
+{
+    return _expired;
+};
+
 // Expires item after it has been used fully, and cannot be used again
 void Prop::expire()
 {
