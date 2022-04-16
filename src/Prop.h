@@ -41,6 +41,9 @@ public:
     // Returns true if item is in its original room
     bool inHomeRoom() const;
 
+    // Returns true if prop is expired
+    bool isExpired() const;
+
     // Returns ID room where this item needs to be used
     int getSolutionRoomID() const;
 
@@ -50,6 +53,10 @@ public:
     // Returns all valid commands for prop
     std::vector<int> *getValidCommands() const;
 
+    int getBlockingRoom() const;
+
+    std::string getBlockerText() const;
+
     // Expires item after it has been used fully, and cannot be used again
     void expire();
 
@@ -58,7 +65,7 @@ public:
 
     // Full param constructor
     Prop(const int &id,
-         const std::string name,
+         const std::string &name,
          const bool &pickedUp,
          const int &homeRoom,
          const int &solutionRoom,

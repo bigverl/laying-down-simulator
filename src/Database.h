@@ -47,14 +47,14 @@ public:
     // Initializes action processing tool
     void initializeActionProcessor();
 
-    // Parses an action passed as string to int value to be used in enum
-    int parseAction(const std::string &toParse);
-
     // Initializes direction processing tool
     void initializeDirectionProcessor();
 
     // Initializes direction processing tool
     void initializeAdjacencyProcessor();
+
+    // Parses an action passed as string to int value to be used in enum
+    int parseAction(const std::string &toParse);
 
     // Parses a direction passed as string to int value to be used in enum
     int parseAdjacency(const std::string &toParse);
@@ -71,36 +71,41 @@ public:
     // Split string
     std::vector<std::string> *split(std::string toSplit);
 
+    // Reads entire file into a single string
+    std::string readFileIntoString(const std::string &path);
+
     // Helper function to import prop data from csv
     void importProps();
 
     // Helper function to import room data from csv
     void importRooms();
 
-    // imports db from csv. this is a very large operation that will populate a ton of objects and data.
-    // basically, it will define the map's room array as a certain size and fill it with those numbers for reference
-    // then it will fill each room object's prop array and fill it with those numbers for reference
-    // It will also actually populate all data in the database's props and room vectors
-    // NOTE: consider making a loading screen if this takes a long time.
-
-    // TODO: Imports data from file to program memory.
+    // Imports data from file to program memory.
     void import();
 
-    std::string readFileIntoString(const std::string &path);
-
-    // TODO: Make sure this looks up and returns a prop by id. the placeholder Prop(); is just here to prevent compile errors rn
+    // Return prop item by ID
     Prop *getProp(const int &id) const;
 
-    // TODO: Make sure this looks up and returns a room by id. the placeholder Prop(); is just here to prevent compile errors rn
+    // Return room item by ID
     Room *getRoom(const int &id) const;
 
+    // Return prop name by id
     std::string getPropName(const int &id) const;
 
+    // Return room name by id
     std::string getRoomName(const int &id) const;
 
+    // Return pointer to all prop data
     std::vector<Prop> *getProps() const;
 
+    // Return pointer to all room data
     std::vector<Room> *getRooms() const;
+
+    // Debug: Returns ID for room adjacent to room ID and direction given
+    int getAdjacentRoomID(const int &origin, const int &direction);
+
+    // Returns prop in origin that's blocking destination
+    int getBlockingPropID(const int &origin, const int &destination);
 };
 
 #endif
