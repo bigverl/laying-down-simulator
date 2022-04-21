@@ -598,7 +598,9 @@ void Game::use()
 
         // arg1 must be in player inventory
 
-        // If so, return the useDescription and exhaust the prop.
+        // If so, return the useDescription
+
+        // also exhaust the prop.
     }
 }
 // Player attempts to use a key to solve a lock
