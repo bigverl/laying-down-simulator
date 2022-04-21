@@ -100,6 +100,10 @@ public:
 
     // Returns true if exit is blocked
     bool exitIsBlocked(const int &direction);
+    // *** End Validators *** //
+
+    // Moves player
+    void movePlayer(const int &destination);
 };
 
 enum MainMenuOptions

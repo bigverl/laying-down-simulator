@@ -369,7 +369,11 @@ void Game::gameLoop()
                         {
                             // DEBUG STUB:
                             std::cout << "Congratulations, debugger. You moved!\n";
-                            // movePlayer();
+
+                            // Move the player
+                            int currentRoom = DB.getRooms()->at(getPlayerPosition()).getID();
+                            int destination = DB.getAdjacentRoomID(currentRoom, direction);
+                            movePlayer(destination);
                         }
                     }
                 }
@@ -494,4 +498,9 @@ bool Game::executeAction(const int &action)
         // std::cout << "That is not a valid command. Please try again\n";
         break;
     }
+}
+
+void Game::movePlayer(const int &destination)
+{
+    _playerPosition = destination;
 }
