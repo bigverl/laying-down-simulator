@@ -15,7 +15,7 @@
 class Player
 {
     // Attributes
-    std::vector<int> *inventory; // vector of items in inventory by id
+    std::vector<int> *_inventory; // vector of items in inventory by id
 
     // Methods
     Player() = default; // private constructor
@@ -26,6 +26,8 @@ public:
 
     // returns id of item given its name. helper function for 'execute' method
     int getItem(const std::string &name);
+
+    std::vector<int> *getInventory() const;
 };
 
 #endif

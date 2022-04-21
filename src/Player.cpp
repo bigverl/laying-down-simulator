@@ -12,3 +12,8 @@ int Player::getItem(const std::string &name)
 {
     return 0;
 }
+
+std::vector<int> *Player::getInventory() const
+{
+    return _inventory;
+}
