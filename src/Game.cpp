@@ -265,6 +265,7 @@ void Game::gameLoop()
     bool exitBlocked = true;
     bool invalidArgCount = true;
     bool quitOrInvOrHelp = true;
+    PLAYER.initializePlayerInventory();
 
     // Begin Game Loop
     while (!playerQuit() && !playerWon())
@@ -452,6 +453,12 @@ bool Game::hasInvalidCommandArgs()
     return (_command->size() > VALID_COMMAND_ARG_COUNT);
 }
 
+// Validates overall command for correct number of arguments
+bool Game::hasInvalidActionArgs(const int &argCount)
+{
+    return (_command->size() > argCount);
+}
+
 // Validates player attempting to use an action command
 bool Game::isInvalidAction(const int &actionToValidate)
 {
@@ -483,6 +490,29 @@ std::string Game::getInput()
     return userInput;
 }
 
+// Checks to see if given action is valid with given prop
+bool invalidActionForProp(const int &propID, const std::string &action)
+{
+    std::vector<int> *supportedCommands = DB.getProps()->at(propID).getValidCommands();
+    int actionInt = DB.parseAction(action);
+    bool invalidAction = true;
+
+    // For each command in this prop's 'valid commands' list
+    for (unsigned long int index = 0; index < supportedCommands->size(); index++)
+    {
+        // Check to see if the given action is supported
+        invalidAction = (actionInt != supportedCommands->at(index));
+
+        // If it doesn't match, it's valid aka !invalid
+        if (!invalidAction)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void Game::printPause()
 {
     std::cout << "Press <ENTER> to continue";
@@ -493,19 +523,12 @@ void Game::printPause()
 // Must return false if successful
 void Game::executeAction(const int &action)
 {
-    bool invalidArgCount = true;
-
-    // Validate all the arg counts
-    // Get the props they're referencing in the command
-
     switch (action)
     {
     case USE:
         // 2 or 3 arg options here
         if (_command->size() == 2)
         {
-            // DEBUG STATEMENT:
-            std::cout << "SOMETHING WENT WEIRD IN 'USE', JUST SAYIN' \n";
             use();
         }
         else if (_command->size() == 3)
@@ -514,7 +537,6 @@ void Game::executeAction(const int &action)
         }
         else
         {
-            std::cout << "SOMETHING WENT WEIRD IN 'USE', JUST SAYIN' \n";
         }
 
         break;
@@ -559,23 +581,24 @@ void Game::use()
     // DEBUG STATEMENT
     std::cout << "Congratulations, debugger: You're inside use():'\n";
 
-    // // Validate arguments
-    // bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
+    // Validate arguments
+    bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
 
-    // if (invalidArgCount)
-    // {
-    //     std::cout << "Too many arguments. If you're trying to 'use' something, you'll want to use the form 'use <prop>'\n";
-    // }
-    // else
-    // {
-    //     // DEBUG STATEMENT
-    //     std::cout << "Congratulations, debugger: This is the prop you wanted:'\n";
+    if (invalidArgCount)
+    {
+        std::cout << "Too many arguments. If you're trying to 'use' something, you'll want to use the form 'use <prop>'\n";
+    }
+    else
+    {
+        // DEBUG STATEMENT
+        std::cout << "Congratulations, debugger: This is the prop you wanted:'\n";
 
-    // Actual code go here. //
+        // Actual code go here. //
 
-    // arg1 must be in player inventory
+        // arg1 must be in player inventory
 
-    // If so, return the useDescription and exhaust the prop.
+        // If so, return the useDescription and exhaust the prop.
+    }
 }
 // Player attempts to use a key to solve a lock
 void Game::solve()
@@ -614,6 +637,53 @@ void Game::look()
 // Player attempts to pick up prop in room
 void Game::get()
 {
+    const int NOT_FOUND = -1;
+    const int CANT_PICK_UP = -1;
+    int propID = -1;
+    bool invalidAction = true;
+    std::string actionName = _command->at(ACTION);
+    std::string propName = _command->at(ARG1);
+
+    // Check if prop is in room
+    propID = DB.getPropIDByName(propName);
+
+    // If you don't find the prop, return appropriate message
+    if (propID == NOT_FOUND)
+    {
+        std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
+    }
+    else // else, prop is in room. See if that prop is able to be picked up
+    {
+        invalidAction = invalidActionForProp(propID, actionName);
+
+        if (invalidAction)
+        {
+            std::cout << "Uh, you don't feel like you can pick up the '" << propName << "'.\n";
+        }
+        else // Else, see if the prop has already been picked up
+        {
+            if (DB.getProps()->at(propID).isPickedUp())
+            {
+                std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
+            }
+            else // Else, pick it up
+            {
+                PLAYER.addPropToInventory(&DB.getProps()->at(propID));
+                DB.getProps()->at(propID).setPickedUpStatus(true);
+                std::cout << "You pick up the '" << propName << "' and add it to your inventory.\n";
+            }
+        }
+
+        // // DEBUG STATEMENT
+        // std::cout << "Printing inv: \n";
+        // for (unsigned long int index = 0; index < PLAYER.getInventory()->size(); index++)
+        // {
+        //     std::cout << "Prop ID: " << PLAYER.getInventory()->at(index).getID() << "\n";
+        //     std::cout << "Prop Name: " << PLAYER.getInventory()->at(index).getName() << "\n";
+        // }
+    }
+
+    // Check if
     // DEBUG STATEMENT
     std::cout << "Congratulations, debugger: You're inside get():'\n";
 }

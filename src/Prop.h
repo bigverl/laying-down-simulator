@@ -60,6 +60,9 @@ public:
     // Expires item after it has been used fully, and cannot be used again
     void expire();
 
+    // Sets a prop's 'picked up' status. Used for when player picks up items so they can't do it twice.
+    void setPickedUpStatus(const bool &newStatus);
+
     // Print for debug
     void print();
 

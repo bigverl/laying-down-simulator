@@ -490,6 +490,8 @@ int Database::getPropIDByName(std::string name)
             return props->at(index).getID();
         }
     }
+
+    return -1;
 }
 
 // Returns a pointer to all the rooms
