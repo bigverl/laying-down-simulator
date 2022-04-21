@@ -296,7 +296,7 @@ void Game::gameLoop()
         else // Else, continue and determine if player is attempting to move
         {
             // DEBUG STUB
-            std::cout << "Yes, that is the correct number of arguments, debugger!\n";
+            // std::cout << "Yes, that is the correct number of arguments, debugger!\n";
 
             // Player is attempting to move because they only input one argument
             if (_command->size() == 1)
@@ -323,7 +323,7 @@ void Game::gameLoop()
                 else // Else, the direction is theoretically valid. Now check for valid exit and blocking prop
                 {
                     // DEBUG STUB
-                    std::cout << "Yes, that was a valid direction, debugger! The direction you entered was: " << direction << ".\n";
+                    // std::cout << "Yes, that was a valid direction, debugger! The direction you entered was: " << direction << ".\n";
 
                     invalidRoomExit = isInvalidExit(direction);
 
@@ -357,11 +357,11 @@ void Game::gameLoop()
                             int destination = DB.getAdjacentRoomID(currentRoom, direction);
                             int blockingPropID = DB.getBlockingPropID(currentRoom, destination);
 
-                            // DEBUG STUB:
-                            std::cout << "Yes, a prop is blocking that exit, debugger! Here's the information for that prop:\n "
-                                      << "Prop ID: " << blockingPropID << "\n"
-                                      << "Prop Name: " << DB.getProps()->at(blockingPropID).getName() << "\n";
-                            // END DEBUG STUB
+                            // // DEBUG STUB:
+                            // std::cout << "Yes, a prop is blocking that exit, debugger! Here's the information for that prop:\n "
+                            //           << "Prop ID: " << blockingPropID << "\n"
+                            //           << "Prop Name: " << DB.getProps()->at(blockingPropID).getName() << "\n";
+                            // // END DEBUG STUB
 
                             // Print the blocking prop's blocker message
                             std::cout << DB.getProps()->at(blockingPropID).getBlockerText() << "\n";
@@ -369,7 +369,7 @@ void Game::gameLoop()
                         else // If none of the above, we're good to move
                         {
                             // DEBUG STUB:
-                            std::cout << "Congratulations, debugger. You moved!\n";
+                            // std::cout << "Congratulations, debugger. You moved!\n";
 
                             // Move the player
                             int currentRoom = DB.getRooms()->at(getPlayerPosition()).getID();
@@ -392,7 +392,7 @@ void Game::gameLoop()
                 else // Else, go ahead and try to execute the action
                 {
                     // DEBUG STUB
-                    std::cout << "Yes, that is a valid action, debugger!\n";
+                    // std::cout << "Yes, that is a valid action, debugger!\n";
                     executeAction(action);
                 }
             }
@@ -577,9 +577,10 @@ void Game::executeAction(const int &action)
 // Player attempts to use standalone prop
 void Game::use()
 {
-    const int VALID_ARG_COUNT = 1; // Valid argument count for this type of action
     // DEBUG STATEMENT
     std::cout << "Congratulations, debugger: You're inside use():'\n";
+
+    const int VALID_ARG_COUNT = 2; // Valid argument count for this type of action
 
     // Validate arguments
     bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
@@ -603,9 +604,10 @@ void Game::use()
 // Player attempts to use a key to solve a lock
 void Game::solve()
 {
-    const int VALID_ARG_COUNT = 2; // Valid argument count for this type of action
     // DEBUG STATEMENT
     std::cout << "Congratulations, debugger: You're inside solve():'\n";
+
+    // const int VALID_ARG_COUNT = 3; // Valid argument count for this type of action
 
     //     // Validate arguments
     //     bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
@@ -637,8 +639,11 @@ void Game::look()
 // Player attempts to pick up prop in room
 void Game::get()
 {
+    // DEBUG:
+    // std::cout << "Congratulations, debugger: You're inside get():'\n";
+
+    // Declaration
     const int NOT_FOUND = -1;
-    const int CANT_PICK_UP = -1;
     int propID = -1;
     bool invalidAction = true;
     std::string actionName = _command->at(ACTION);
@@ -673,19 +678,10 @@ void Game::get()
                 std::cout << "You pick up the '" << propName << "' and add it to your inventory.\n";
             }
         }
-
-        // // DEBUG STATEMENT
-        // std::cout << "Printing inv: \n";
-        // for (unsigned long int index = 0; index < PLAYER.getInventory()->size(); index++)
-        // {
-        //     std::cout << "Prop ID: " << PLAYER.getInventory()->at(index).getID() << "\n";
-        //     std::cout << "Prop Name: " << PLAYER.getInventory()->at(index).getName() << "\n";
-        // }
     }
 
-    // Check if
-    // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside get():'\n";
+    // DEBUG: Print player inventory
+    // PLAYER.printInventory();
 }
 // Player attempts to push prop in room
 void Game::push()

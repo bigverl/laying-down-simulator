@@ -33,6 +33,9 @@ public:
 
     // Adds prop to player's inventory
     void addPropToInventory(Prop *toAdd);
+
+    // DEBUG: Print player inventory
+    void printInventory();
 };
 
 #endif

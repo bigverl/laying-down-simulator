@@ -24,3 +24,14 @@ void Player::addPropToInventory(Prop *toAdd)
 {
     _inventory->push_back(*toAdd);
 }
+
+// DEBUG: Print player inventory
+void Player::printInventory()
+{
+    std::cout << "Printing inv: \n";
+    for (unsigned long int index = 0; index < PLAYER.getInventory()->size(); index++)
+    {
+        std::cout << "Prop ID: " << PLAYER.getInventory()->at(index).getID() << "\n";
+        std::cout << "Prop Name: " << PLAYER.getInventory()->at(index).getName() << "\n";
+    }
+}
