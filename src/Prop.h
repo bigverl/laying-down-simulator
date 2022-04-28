@@ -57,6 +57,8 @@ public:
 
     std::string getBlockerText() const;
 
+    std::string getUseDescription() const;
+
     // Expires item after it has been used fully, and cannot be used again
     void expire();
 

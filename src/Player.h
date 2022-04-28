@@ -37,8 +37,8 @@ public:
     // DEBUG: Print player inventory
     void printInventory();
 
-    // Returns the index of a prop in the player's inventory given the prop's name
-    int findProp(std::string);
+    // Returns true if a given prop is in the player's inventory
+    bool propInInventory(const int &propID);
 };
 
 #endif

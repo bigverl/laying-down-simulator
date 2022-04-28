@@ -80,7 +80,7 @@ public:
     bool hasInvalidCommandArgs();
 
     // Validates a specific action for correct number of arguments (use, get, etc)
-    bool hasInvalidActionArgs(const int &argCount);
+    bool hasInvalidActionArgs(const unsigned long int &argCount);
 
     // Validate command for valid action (GET, etc)
     bool isInvalidAction(const int &actionToValidate);

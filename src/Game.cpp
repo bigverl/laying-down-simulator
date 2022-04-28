@@ -410,20 +410,25 @@ void Game::gameLoop()
 // Returns true if object is blocking exit
 bool Game::exitIsBlocked(const int &direction)
 {
-    const int BLOCKED_EXIT_VALUE = -1;
+    const int BLOCKED_EXIT = -1;
     // Get blockingprop ID
     int currentRoom = DB.getRooms()->at(getPlayerPosition()).getID();
     int destination = DB.getAdjacentRoomID(currentRoom, direction);
     int blockingPropID = DB.getBlockingPropID(currentRoom, destination);
-    bool blockingPropExpired = DB.getProps()->at(blockingPropID).isExpired();
+    bool blocked = (blockingPropID == BLOCKED_EXIT);
+    bool blockingPropExpired = true;
 
-    // If the prop is expired, it is no longer blocking.
-    if (blockingPropExpired)
+    if (blocked)
     {
-        return false;
+        blockingPropExpired = DB.getProps()->at(blockingPropID).isExpired();
+        // If the prop is expired, it is no longer blocking.
+        if (blockingPropExpired)
+        {
+            return false;
+        }
     }
 
-    return blockingPropID != BLOCKED_EXIT_VALUE;
+    return blockingPropID != BLOCKED_EXIT;
 }
 
 // Returns true if exit does not exist in given direction
@@ -454,7 +459,7 @@ bool Game::hasInvalidCommandArgs()
 }
 
 // Validates overall command for correct number of arguments
-bool Game::hasInvalidActionArgs(const int &argCount)
+bool Game::hasInvalidActionArgs(const unsigned long int &argCount)
 {
     return (_command->size() > argCount);
 }
@@ -578,37 +583,41 @@ void Game::executeAction(const int &action)
 void Game::use()
 {
     // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside use():'\n";
+    // std::cout << "Congratulations, debugger: You're inside use():'\n";
 
     // Declaration
-    const int VALID_ARG_COUNT = 2; // Valid argument count for this type of action
+    const unsigned long int VALID_ARG_COUNT = 2; // Valid argument count for this type of action
     const int NOT_FOUND = -1;
-    int propID = -1;
     std::string propName = _command->at(ARG1);
-
-    // Validate arguments
+    int propID = DB.getPropIDByName(propName);
+    std::string actionName = _command->at(ACTION);
+    std::string errorMsg = "Hmm, you don't seem to have any '" + propName + "' to use.\n";
     bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
 
     if (invalidArgCount)
     {
         std::cout << "Too many arguments. If you're trying to 'use' something, you'll want to use the form 'use <prop>'\n";
     }
-    else
+    else if (propID == NOT_FOUND)
     {
-        // DEBUG STATEMENT
-        // std::cout << "Congratulations, debugger: This is the prop you wanted:'\n";
-
-        // Actual code go here. //
-
-        // arg1 is a prop that exists
-        bool propID = false;
-
-        // arg1 must be in player inventory
-        bool inInventory = false;
-
-        // If so, return the useDescription
-
-        // also exhaust the prop.
+        std::cout << errorMsg;
+    }
+    else if (!PLAYER.propInInventory(propID)) // Check to see if it's in player inventory
+    {
+        std::cout << errorMsg;
+    }
+    else if (DB.getProps()->at(propID).isExpired()) // Check to see if the prop has already been exhausted
+    {
+        std::cout << errorMsg;
+    }
+    else if (invalidActionForProp(propID, actionName)) // If not, check if that's a valid action for this prop
+    {
+        std::cout << "I don't think that can be used by itself.";
+    }
+    else // else, expire it and print the useDescription
+    {
+        DB.getProps()->at(propID).expire();
+        std::cout << DB.getProps()->at(propID).getUseDescription() << "\n";
     }
 }
 // Player attempts to use a key to solve a lock
@@ -773,6 +782,8 @@ void Game::inventory()
 {
     // DEBUG STATEMENT
     std::cout << "Congratulations, debugger: You're inside inventory():'\n";
+
+    // UI.printInventory();
 }
 
 // Player wishes to open help menu
@@ -780,6 +791,8 @@ void Game::help()
 {
     // DEBUG STATEMENT
     std::cout << "Congratulations, debugger: You're inside help():'\n";
+
+    // UI.printHelp();
 }
 
 void Game::movePlayer(const int &destination)
@@ -787,7 +800,7 @@ void Game::movePlayer(const int &destination)
     _playerPosition = destination;
 }
 
-// Returns true if prop is not in this room
+// Returns true if prop is in room player currently occupies
 bool Game::propInRoom(const int &propID)
 {
     bool found = false;

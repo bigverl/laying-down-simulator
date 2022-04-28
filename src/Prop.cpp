@@ -48,6 +48,12 @@ std::vector<int> *Prop::getValidCommands() const
     return _validCommands;
 }
 
+// Returns text when player uses 2-arg use with single item
+std::string Prop::getUseDescription() const
+{
+    return _useDescription;
+}
+
 // Returns true if prop is expired
 bool Prop::isExpired() const
 {

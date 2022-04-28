@@ -35,3 +35,16 @@ void Player::printInventory()
         std::cout << "Prop Name: " << PLAYER.getInventory()->at(index).getName() << "\n";
     }
 }
+
+// Returns true if prop is in player's inventory
+bool Player::propInInventory(const int &propID)
+{
+    bool found = false;
+    unsigned long int index = 0;
+    while (!found && index < _inventory->size())
+    {
+        found = (_inventory->at(index).getID() == propID);
+        index++;
+    }
+    return found;
+}
