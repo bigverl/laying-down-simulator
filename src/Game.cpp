@@ -636,7 +636,35 @@ void Game::solve()
 void Game::look()
 {
     // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside look():'\n";
+    // std::cout << "Congratulations, debugger: You're inside look():'\n";
+
+    // Declaration
+    const int NOT_FOUND = -1;
+    int propID = -1;
+    std::string propName = _command->at(ARG1);
+
+    // Check if prop is in room
+    propID = DB.getPropIDByName(propName);
+
+    // Is prop in room
+    // If you don't find the prop, return appropriate message
+    if (propID == NOT_FOUND)
+    {
+        std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
+    }
+    else // else, check to see if the prop has already been picked up
+    {
+        if (DB.getProps()->at(propID).isPickedUp())
+        {
+            std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
+        }
+        else // Else, pick it up
+        {
+            std::cout << DB.getProps()->at(propID).getLookDescription() << "\n";
+        }
+    }
+
+    // If so, return lookDescription
 }
 // Player attempts to pick up prop in room
 void Game::get()
