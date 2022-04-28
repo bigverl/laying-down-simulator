@@ -410,25 +410,26 @@ void Game::gameLoop()
 // Returns true if object is blocking exit
 bool Game::exitIsBlocked(const int &direction)
 {
-    const int BLOCKED_EXIT = -1;
+    const int NOT_FOUND = -1;
     // Get blockingprop ID
     int currentRoom = DB.getRooms()->at(getPlayerPosition()).getID();
     int destination = DB.getAdjacentRoomID(currentRoom, direction);
     int blockingPropID = DB.getBlockingPropID(currentRoom, destination);
-    bool blocked = (blockingPropID == BLOCKED_EXIT);
-    bool blockingPropExpired = true;
 
-    if (blocked)
+    if (blockingPropID == NOT_FOUND)
     {
-        blockingPropExpired = DB.getProps()->at(blockingPropID).isExpired();
-        // If the prop is expired, it is no longer blocking.
-        if (blockingPropExpired)
-        {
-            return false;
-        }
+        // there is no blocking prop ID
+        return false;
     }
 
-    return blockingPropID != BLOCKED_EXIT;
+    bool blockingPropExpired = DB.getProps()->at(blockingPropID).isExpired();
+    // If the prop is expired, it is no longer blocking.
+    if (blockingPropExpired)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 // Returns true if exit does not exist in given direction
