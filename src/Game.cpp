@@ -580,7 +580,11 @@ void Game::use()
     // DEBUG STATEMENT
     std::cout << "Congratulations, debugger: You're inside use():'\n";
 
+    // Declaration
     const int VALID_ARG_COUNT = 2; // Valid argument count for this type of action
+    const int NOT_FOUND = -1;
+    int propID = -1;
+    std::string propName = _command->at(ARG1);
 
     // Validate arguments
     bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
@@ -592,11 +596,15 @@ void Game::use()
     else
     {
         // DEBUG STATEMENT
-        std::cout << "Congratulations, debugger: This is the prop you wanted:'\n";
+        // std::cout << "Congratulations, debugger: This is the prop you wanted:'\n";
 
         // Actual code go here. //
 
+        // arg1 is a prop that exists
+        bool propID = false;
+
         // arg1 must be in player inventory
+        bool inInventory = false;
 
         // If so, return the useDescription
 
@@ -643,28 +651,36 @@ void Game::look()
     int propID = -1;
     std::string propName = _command->at(ARG1);
 
-    // Check if prop is in room
+    // Check if prop exists
     propID = DB.getPropIDByName(propName);
 
-    // Is prop in room
-    // If you don't find the prop, return appropriate message
+    // Check if prop is in room
+
+    // If the prop doesnt exist in the game, return appropriate message
     if (propID == NOT_FOUND)
     {
         std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
     }
-    else // else, check to see if the prop has already been picked up
-    {
-        if (DB.getProps()->at(propID).isPickedUp())
+    else
+    { // Else, check to see if prop is in this room
+
+        // If the prop isn't in the room, notify player
+        if (!propInRoom(propID))
         {
             std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
         }
-        else // Else, pick it up
+        else // else, check to see if the prop has already been picked up
         {
-            std::cout << DB.getProps()->at(propID).getLookDescription() << "\n";
+            if (DB.getProps()->at(propID).isPickedUp())
+            {
+                std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
+            }
+            else // If not, return lookDescription
+            {
+                std::cout << DB.getProps()->at(propID).getLookDescription() << "\n";
+            }
         }
     }
-
-    // If so, return lookDescription
 }
 // Player attempts to pick up prop in room
 void Game::get()
@@ -682,30 +698,37 @@ void Game::get()
     // Check if prop is in room
     propID = DB.getPropIDByName(propName);
 
-    // If you don't find the prop, return appropriate message
+    // get the prop id and see if it's in the game at all
     if (propID == NOT_FOUND)
     {
         std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
     }
-    else // else, prop is in room. See if that prop is able to be picked up
+    else // else check to see if prop is in the room
     {
-        invalidAction = invalidActionForProp(propID, actionName);
-
-        if (invalidAction)
+        if (!propInRoom(propID))
         {
-            std::cout << "Uh, you don't feel like you can pick up the '" << propName << "'.\n";
+            std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
         }
-        else // Else, see if the prop has already been picked up
+        else // else, prop is in room. See if that prop is able to be picked up
         {
-            if (DB.getProps()->at(propID).isPickedUp())
+            invalidAction = invalidActionForProp(propID, actionName);
+
+            if (invalidAction)
             {
-                std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
+                std::cout << "Uh, you don't feel like you can pick up the '" << propName << "'.\n";
             }
-            else // Else, pick it up
+            else // Else, see if the prop has already been picked up
             {
-                PLAYER.addPropToInventory(&DB.getProps()->at(propID));
-                DB.getProps()->at(propID).setPickedUpStatus(true);
-                std::cout << "You pick up the '" << propName << "' and add it to your inventory.\n";
+                if (DB.getProps()->at(propID).isPickedUp())
+                {
+                    std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
+                }
+                else // Else, pick it up
+                {
+                    PLAYER.addPropToInventory(&DB.getProps()->at(propID));
+                    DB.getProps()->at(propID).setPickedUpStatus(true);
+                    std::cout << "You pick up the '" << propName << "' and add it to your inventory.\n";
+                }
             }
         }
     }
@@ -762,4 +785,17 @@ void Game::help()
 void Game::movePlayer(const int &destination)
 {
     _playerPosition = destination;
+}
+
+// Returns true if prop is not in this room
+bool Game::propInRoom(const int &propID)
+{
+    bool found = false;
+    unsigned long int index = 0;
+    while (!found && index < DB.getRooms()->at(_playerPosition).getProps()->size())
+    {
+        found = (DB.getRooms()->at(_playerPosition).getProps()->at(index) == propID);
+        index++;
+    }
+    return found;
 }

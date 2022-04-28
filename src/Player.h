@@ -36,6 +36,9 @@ public:
 
     // DEBUG: Print player inventory
     void printInventory();
+
+    // Returns the index of a prop in the player's inventory given the prop's name
+    int findProp(std::string);
 };
 
 #endif

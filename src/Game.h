@@ -102,6 +102,10 @@ public:
 
     // Returns true if exit is blocked
     bool exitIsBlocked(const int &direction);
+
+    // Returns true if prop is in this room
+    bool propInRoom(const int &propID);
+
     // *** End Validators *** //
 
     // *** Begin Action-Related Methods ** //
