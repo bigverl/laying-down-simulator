@@ -7,13 +7,31 @@ Player &Player::getInstance()
     return instance;
 }
 
-// returns id of item given its name. helper function for 'execute' method
-int Player::getItem(const std::string &name)
-{
-    return 0;
-}
-
-std::vector<int> *Player::getInventory() const
+// Returns player's inventory
+std::vector<Prop> *Player::getInventory() const
 {
     return _inventory;
+}
+
+// Initializes player inventory to new item
+void Player::initializePlayerInventory()
+{
+    _inventory = new std::vector<Prop>;
+}
+
+// Adds prop to player's inventory
+void Player::addPropToInventory(Prop *toAdd)
+{
+    _inventory->push_back(*toAdd);
+}
+
+// DEBUG: Print player inventory
+void Player::printInventory()
+{
+    std::cout << "Printing inv: \n";
+    for (unsigned long int index = 0; index < PLAYER.getInventory()->size(); index++)
+    {
+        std::cout << "Prop ID: " << PLAYER.getInventory()->at(index).getID() << "\n";
+        std::cout << "Prop Name: " << PLAYER.getInventory()->at(index).getName() << "\n";
+    }
 }

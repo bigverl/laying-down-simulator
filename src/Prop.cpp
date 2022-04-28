@@ -18,6 +18,12 @@ bool Prop::isPickedUp() const
     return _pickedUp;
 }
 
+// Sets a prop's 'picked up' status. Used for when player picks up items so they can't do it twice.
+void Prop::setPickedUpStatus(const bool &newStatus)
+{
+    _pickedUp = newStatus;
+}
+
 // Returns true if item is in its original room
 bool Prop::inHomeRoom() const
 {

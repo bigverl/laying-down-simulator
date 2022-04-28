@@ -473,6 +473,27 @@ std::string Database::getRoomName(const int &id) const
     return "ERROR: ROOM NAME NOT FOUND";
 }
 
+// Player will reference props by name, and so we must retrieve their ID's by name
+int Database::getPropIDByName(std::string name)
+{
+    for (unsigned long int index = 0; index < props->size(); index++)
+    {
+        // ToLower the prop name. This is a workaround
+        for (auto &c : name)
+        {
+            c = (char)tolower(c);
+        }
+
+        // ToUpper
+        if (props->at(index).getName() == name)
+        {
+            return props->at(index).getID();
+        }
+    }
+
+    return -1;
+}
+
 // Returns a pointer to all the rooms
 std::vector<Room> *Database::getRooms() const
 {

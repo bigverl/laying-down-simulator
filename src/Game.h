@@ -66,9 +66,8 @@ public:
     // The primary game loop. Handles basically all the processing in the game
     void gameLoop();
 
-    // This governs executing actions such as GET, PUSH, PULL, etc
-    // Must return false if successful
-    bool executeAction(const int &action);
+    // Moves player
+    void movePlayer(const int &destination);
 
     // Gets player input to process into command
     std::string getInput();
@@ -77,8 +76,11 @@ public:
     void printPause();
 
     // ***** Validators ***** //
-    // Validates commands for correct number of arguments
+    // Validates command input for correct number of arguments -> (north arg1 arg2 prop3 is invalid)
     bool hasInvalidCommandArgs();
+
+    // Validates a specific action for correct number of arguments (use, get, etc)
+    bool hasInvalidActionArgs(const int &argCount);
 
     // Validate command for valid action (GET, etc)
     bool isInvalidAction(const int &actionToValidate);
@@ -102,8 +104,43 @@ public:
     bool exitIsBlocked(const int &direction);
     // *** End Validators *** //
 
-    // Moves player
-    void movePlayer(const int &destination);
+    // *** Begin Action-Related Methods ** //
+    // This governs executing actions such as GET, PUSH, PULL, etc
+    // Must return false if successful
+    void executeAction(const int &action);
+
+    // Player attempts to use standalone prop
+    void use();
+
+    // Player attempts to use a key to solve a lock
+    void solve();
+
+    // Player attempts to look at prop in room
+    void look();
+
+    // Player attempts to pick up prop in room
+    void get();
+
+    // Player attempts to push prop in room
+    void push();
+
+    // Player attempts to push prop in room
+    void pull();
+
+    // Player attempts to talk to prop in room
+    void talk();
+
+    // Player attempts to open prop in room
+    void open();
+
+    // Player attempts to close prop in room
+    void close();
+
+    // Player wishes to access inventory
+    void inventory();
+
+    // Player wishes to open help menu
+    void help();
 };
 
 enum MainMenuOptions

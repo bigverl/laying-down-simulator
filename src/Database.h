@@ -89,6 +89,9 @@ public:
     // Return room item by ID
     Room *getRoom(const int &id) const;
 
+    // Player will reference props by name, and so we must retrieve their ID's by name
+    int getPropIDByName(std::string name);
+
     // Return prop name by id
     std::string getPropName(const int &id) const;
 

@@ -29,8 +29,11 @@ public:
     // compared to adj list
     void printNavigation(const int &id);
 
-    // prints player inventory, probably also says 'press enter to continue'
+    // Prints player inventory, probably also says 'press enter to continue'
     // then reprints current room
+    void printInventoryScreen();
+
+    //
     void printPlayerInventory();
 
     // prints title screen
