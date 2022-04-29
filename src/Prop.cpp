@@ -36,6 +36,24 @@ int Prop::getSolutionRoomID() const
     return _solutionRoom;
 }
 
+// Returns ID of LOCK that this KEY solves
+int Prop::getSolutionProp() const
+{
+    return _solutionProp;
+}
+
+// Returns message when this KEY is successfully used to solve a puzzle
+std::string Prop::getSuccessText() const
+{
+    return _successText;
+}
+
+// Returns ID that this prop is blocking
+int Prop::getBlockingPropID() const
+{
+    return _blockingProp;
+}
+
 // Returns prop's description when player enters "LOOK <target>"
 std::string Prop::getLookDescription() const
 {

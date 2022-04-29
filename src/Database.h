@@ -108,7 +108,10 @@ public:
     int getAdjacentRoomID(const int &origin, const int &direction);
 
     // Returns prop in origin that's blocking destination
-    int getBlockingPropID(const int &origin, const int &destination);
+    int getRoomBlockerID(const int &origin, const int &destination);
+
+    // Returns prop blocking this one. Returns -1 if prop is not blocked
+    int getPropBlockerID(const int &propID);
 };
 
 #endif

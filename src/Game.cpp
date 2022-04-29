@@ -355,7 +355,7 @@ void Game::gameLoop()
                             // Get blockingprop ID
                             int currentRoom = DB.getRooms()->at(getPlayerPosition()).getID();
                             int destination = DB.getAdjacentRoomID(currentRoom, direction);
-                            int blockingPropID = DB.getBlockingPropID(currentRoom, destination);
+                            int blockingPropID = DB.getRoomBlockerID(currentRoom, destination);
 
                             // // DEBUG STUB:
                             // std::cout << "Yes, a prop is blocking that exit, debugger! Here's the information for that prop:\n "
@@ -414,7 +414,7 @@ bool Game::exitIsBlocked(const int &direction)
     // Get blockingprop ID
     int currentRoom = DB.getRooms()->at(getPlayerPosition()).getID();
     int destination = DB.getAdjacentRoomID(currentRoom, direction);
-    int blockingPropID = DB.getBlockingPropID(currentRoom, destination);
+    int blockingPropID = DB.getRoomBlockerID(currentRoom, destination);
 
     if (blockingPropID == NOT_FOUND)
     {
@@ -431,6 +431,29 @@ bool Game::exitIsBlocked(const int &direction)
 
     return true;
 }
+
+// // Returns true if given prop is blocked by other prop
+// bool Game::propIsBlocked(const int &propID)
+// {
+//     const int NOT_FOUND = -1;
+//     // Get blockingprop ID
+//     int blockingPropID = DB.getPropBlockerID();
+
+//     if (blockingPropID == NOT_FOUND)
+//     {
+//         // there is no blocking prop ID
+//         return false;
+//     }
+
+//     bool blockingPropExpired = DB.getProps()->at(blockingPropID).isExpired();
+//     // If the prop is expired, it is no longer blocking.
+//     if (blockingPropExpired)
+//     {
+//         return false;
+//     }
+
+//     return true;
+// }
 
 // Returns true if exit does not exist in given direction
 bool Game::isInvalidExit(const int &direction)
@@ -594,10 +617,14 @@ void Game::use()
     std::string actionName = _command->at(ACTION);
     std::string errorMsg = "Hmm, you don't seem to have any '" + propName + "' to use.\n";
     bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
+    const int FLASHLIGHT = 5;
+    const int DESK = 13;
+    const int TUNNEL_HUB_LIGHT = 3;
+    const int CREDITS = 8;
 
     if (invalidArgCount)
     {
-        std::cout << "Too many arguments. If you're trying to 'use' something, you'll want to use the form 'use <prop>'\n";
+        std::cout << "Too many arguments. If you're trying to 'use' something, try 'use <prop>'\n";
     }
     else if (propID == NOT_FOUND)
     {
@@ -619,36 +646,76 @@ void Game::use()
     {
         DB.getProps()->at(propID).expire();
         std::cout << DB.getProps()->at(propID).getUseDescription() << "\n";
+
+        // I know this is bad but it's happening
+        if (propID == FLASHLIGHT)
+        {
+            movePlayer(TUNNEL_HUB_LIGHT);
+        }
+        else if (propID == DESK)
+        {
+            movePlayer(CREDITS);
+        }
+        else
+        {
+        }
     }
 }
 // Player attempts to use a key to solve a lock
 void Game::solve()
 {
     // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside solve():'\n";
+    // std::cout << "Congratulations, debugger: You're inside solve():'\n";
 
-    // const int VALID_ARG_COUNT = 3; // Valid argument count for this type of action
+    // Declaration
+    const unsigned long int VALID_ARG_COUNT = 3; // Valid argument count for this type of action
+    const int NOT_FOUND = -1;
+    std::string keyName = _command->at(ARG1);
+    std::string lockName = _command->at(ARG2);
+    int keyID = DB.getPropIDByName(keyName);
+    int lockID = DB.getPropIDByName(lockName);
+    std::string actionName = "SOLVE";
+    bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
 
-    //     // Validate arguments
-    //     bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
-
-    //     if (invalidArgCount)
-    //     {
-    //         std::cout << "Too many arguments. If you're trying to 'use' something, you'll want to use the form 'use <prop>'\n";
-    //     }
-    //     else
-    //     {
-    //         // DEBUG STATEMENT
-    //         std::cout << "Congratulations, debugger: This is the key prop you used:'\n";
-    //         std::cout << "And this is the lock prop you used it on: '\n";
-
-    // Actual code go here //
-
-    // arg1 (key) must be in player inventory
-
-    // etc
-
-    // exhaust key, exhaust lock
+    // Code
+    if (invalidArgCount) // Valid arguments
+    {
+        std::cout << "Invalid argument count. If you're trying to 'use' something on another thing, try 'use <prop1> <prop2>'\n";
+    }
+    else if (keyID == NOT_FOUND) // Key is in game
+    {
+        std::cout << "You don't seem to have a " << keyName << " to use. \n";
+    }
+    else if (lockID == NOT_FOUND) // Lock is in game
+    {
+        std::cout << "You don't see a " << lockName << " here..\n";
+    }
+    else if (!PLAYER.propInInventory(keyID)) // Key is in player inventory
+    {
+        std::cout << "You don't seem to have a " << keyName << " to use. \n";
+    }
+    else if (!propInRoom(lockID)) // Lock is in room
+    {
+        std::cout << "You don't see a " << lockName << " here..\n";
+    }
+    else if (DB.getProps()->at(keyID).isExpired()) // Key is not expired
+    {
+        std::cout << "You don't seem to have a " << keyName << " to use. \n";
+    }
+    else if (invalidActionForProp(keyID, actionName)) // Key supports 'solve' command
+    {
+        std::cout << "I don't think that can be used like that.";
+    }
+    else if ((DB.getProps()->at(keyID).getSolutionProp()) != lockID) // Key's solutionProp == Lock
+    {
+        std::cout << "Using the " << keyName << " on the " << lockName << " doesn't seem to do anything..\n";
+    }
+    else // Success: Exhaust props, print message
+    {
+        DB.getProps()->at(keyID).expire();
+        DB.getProps()->at(lockID).expire();
+        std::cout << DB.getProps()->at(keyID).getSuccessText() << "\n";
+    }
 }
 // Player attempts to look at prop in room
 void Game::look()
@@ -660,36 +727,23 @@ void Game::look()
     const int NOT_FOUND = -1;
     int propID = -1;
     std::string propName = _command->at(ARG1);
-
-    // Check if prop exists
     propID = DB.getPropIDByName(propName);
 
-    // Check if prop is in room
-
-    // If the prop doesnt exist in the game, return appropriate message
-    if (propID == NOT_FOUND)
+    if (propID == NOT_FOUND) // Prop does not exist in game
     {
         std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
     }
-    else
-    { // Else, check to see if prop is in this room
-
-        // If the prop isn't in the room, notify player
-        if (!propInRoom(propID))
-        {
-            std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
-        }
-        else // else, check to see if the prop has already been picked up
-        {
-            if (DB.getProps()->at(propID).isPickedUp())
-            {
-                std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
-            }
-            else // If not, return lookDescription
-            {
-                std::cout << DB.getProps()->at(propID).getLookDescription() << "\n";
-            }
-        }
+    else if (!propInRoom(propID)) // Prop is in room
+    {
+        std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
+    }
+    else if (DB.getProps()->at(propID).isPickedUp()) // Prop has not been picked up yet
+    {
+        std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
+    }
+    else // Success: Return description
+    {
+        std::cout << DB.getProps()->at(propID).getLookDescription() << "\n";
     }
 }
 // Player attempts to pick up prop in room
@@ -701,51 +755,42 @@ void Game::get()
     // Declaration
     const int NOT_FOUND = -1;
     int propID = -1;
-    bool invalidAction = true;
+    int blockerID = -1;
     std::string actionName = _command->at(ACTION);
     std::string propName = _command->at(ARG1);
-
-    // Check if prop is in room
     propID = DB.getPropIDByName(propName);
 
-    // get the prop id and see if it's in the game at all
-    if (propID == NOT_FOUND)
+    if (propID == NOT_FOUND) // Prop is not in game
     {
         std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
     }
-    else // else check to see if prop is in the room
+    else if (!propInRoom(propID)) // Prop is not in room
     {
-        if (!propInRoom(propID))
-        {
-            std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
-        }
-        else // else, prop is in room. See if that prop is able to be picked up
-        {
-            invalidAction = invalidActionForProp(propID, actionName);
-
-            if (invalidAction)
-            {
-                std::cout << "Uh, you don't feel like you can pick up the '" << propName << "'.\n";
-            }
-            else // Else, see if the prop has already been picked up
-            {
-                if (DB.getProps()->at(propID).isPickedUp())
-                {
-                    std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
-                }
-                else // Else, pick it up
-                {
-                    PLAYER.addPropToInventory(&DB.getProps()->at(propID));
-                    DB.getProps()->at(propID).setPickedUpStatus(true);
-                    std::cout << "You pick up the '" << propName << "' and add it to your inventory.\n";
-                }
-            }
-        }
+        std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
+    }
+    else if (invalidActionForProp(propID, actionName)) // Action is invalid for prop
+    {
+        std::cout << "Uh, you don't feel like you can pick up the '" << propName << "'.\n";
+    }
+    else if (DB.getProps()->at(propID).isPickedUp()) // Prop is already picked up
+    {
+        std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
+    }
+    else if ((blockerID = DB.getPropBlockerID(propID)) != NOT_FOUND) // It's blocked
+    {
+        std::cout << DB.getProps()->at(blockerID).getBlockerText() << "\n";
+    }
+    else // Success: Pick it up
+    {
+        PLAYER.addPropToInventory(&DB.getProps()->at(propID));
+        DB.getProps()->at(propID).setPickedUpStatus(true);
+        std::cout << "You pick up the '" << propName << "' and add it to your inventory.\n";
     }
 
     // DEBUG: Print player inventory
     // PLAYER.printInventory();
 }
+
 // Player attempts to push prop in room
 void Game::push()
 {
@@ -768,7 +813,47 @@ void Game::talk()
 void Game::open()
 {
     // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside open():'\n";
+    // std::cout << "Congratulations, debugger: You're inside open():'\n";
+
+    // Declaration
+    const unsigned long int VALID_ARG_COUNT = 2; // Valid argument count for this type of action
+    const int NOT_FOUND = -1;
+    int blockerID = -1;
+    std::string propName = _command->at(ARG1);
+    int propID = DB.getPropIDByName(propName);
+    std::string actionName = "OPEN";
+    std::string errorMsg = "Hmm, you don't see any '" + propName + "' to open.\n";
+    bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
+
+    if (invalidArgCount) // Valid number of arguments
+    {
+        std::cout << "Too many arguments. If you're trying to 'open' something, try 'open <prop>'\n";
+    }
+    else if (propID == NOT_FOUND) // Prop in game
+    {
+        std::cout << errorMsg;
+    }
+    else if (!propInRoom(propID)) // Prop in room
+    {
+        std::cout << errorMsg;
+    }
+    else if (DB.getProps()->at(propID).isExpired()) // Prop is expired
+    {
+        std::cout << "That's already open!";
+    }
+    else if (invalidActionForProp(propID, actionName)) // validate prop supports action
+    {
+        std::cout << "I don't think you can open the " << propName << " \n.";
+    }
+    else if ((blockerID = DB.getPropBlockerID(propID)) == NOT_FOUND) // Prop not blocked
+    {
+        std::cout << DB.getProps()->at(blockerID).getBlockerText() << "\n";
+    }
+    else // Success: Expire prop and print the useDescription
+    {
+        DB.getProps()->at(propID).expire();
+        std::cout << DB.getProps()->at(propID).getUseDescription() << "\n";
+    }
 }
 
 // Player attempts to close prop in room
@@ -783,8 +868,10 @@ void Game::inventory()
 {
     // DEBUG STATEMENT
     std::cout << "Congratulations, debugger: You're inside inventory():'\n";
+    PLAYER.printInventory();
+    // END DEBUG
 
-    // UI.printInventory();
+    // UI.printInventory(PLAYER.getInventory());
 }
 
 // Player wishes to open help menu

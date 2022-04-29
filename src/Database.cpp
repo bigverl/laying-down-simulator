@@ -507,7 +507,7 @@ std::vector<Prop> *Database::getProps() const
 }
 
 // Gets prop in origin that blocks destination. Returns -1 if nothing blocking
-int Database::getBlockingPropID(const int &origin, const int &destination)
+int Database::getRoomBlockerID(const int &origin, const int &destination)
 {
     // Get the props in this room
     std::vector<int> *propsInRoom = getRooms()->at(origin).getProps();
@@ -532,6 +532,31 @@ int Database::getBlockingPropID(const int &origin, const int &destination)
 
     // Return its ID
     return blockingPropID;
+}
+
+// Returns prop blocking this one. Returns -1 if prop is not blocked
+int Database::getPropBlockerID(const int &propID)
+{
+    int blockerID = -1;
+    bool found = false;
+    unsigned long int index = 0;
+
+    while (!found && index < DB.getProps()->size())
+    {
+        // if found, change it
+        found = (propID == DB.getProps()->at(index).getBlockingPropID());
+        if (found)
+        {
+            blockerID = DB.getProps()->at(index).getBlockingPropID();
+        }
+        else
+        {
+            index++;
+        }
+    }
+
+    return blockerID;
+    // return that value
 }
 
 // Debug: Returns ID for room adjacent to room ID and direction given. Returns -1 if invalid
