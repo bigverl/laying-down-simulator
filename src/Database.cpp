@@ -65,6 +65,8 @@ void Database::initializeDirectionProcessor()
         {"WEST", W},
         {"SOUTH", S},
         {"EAST", E}};
+
+    _directions = new std::vector<std::string>{"NORTH", "WEST", "SOUTH", "EAST"};
 }
 
 int Database::parseDirection(const std::string &toParse)
@@ -471,6 +473,11 @@ std::string Database::getRoomName(const int &id) const
     }
 
     return "ERROR: ROOM NAME NOT FOUND";
+}
+
+std::vector<std::string> *Database::getDirections()
+{
+    return _directions;
 }
 
 // Player will reference props by name, and so we must retrieve their ID's by name
