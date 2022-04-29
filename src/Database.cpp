@@ -541,7 +541,7 @@ int Database::getRoomBlockerID(const int &origin, const int &destination)
     return blockingPropID;
 }
 
-// Returns prop blocking this one. Returns -1 if prop is not blocked
+// Returns prop blocking this one. Returns -1 if prop is not blocked or if the blocker is exhausted
 int Database::getPropBlockerID(const int &propID)
 {
     int blockerID = -1;
@@ -550,11 +550,11 @@ int Database::getPropBlockerID(const int &propID)
 
     while (!found && index < DB.getProps()->size())
     {
-        // if found, change it
+        // if found, and the found prop is not expire, register it
         found = (propID == DB.getProps()->at(index).getBlockingPropID());
-        if (found)
+        if (found && (!DB.getProps()->at(index).isExpired()))
         {
-            blockerID = DB.getProps()->at(index).getBlockingPropID();
+            blockerID = DB.getProps()->at(index).getID();
         }
         else
         {

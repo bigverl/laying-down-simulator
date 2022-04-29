@@ -53,6 +53,9 @@ public:
     // Returns ID that this prop is blocking
     int getBlockingPropID() const;
 
+    // Returns text response of talking to prop
+    std::string getTalkText() const;
+
     // Returns message when this KEY is successfully used to solve a puzzle
     std::string getSuccessText() const;
 

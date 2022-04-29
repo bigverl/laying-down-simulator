@@ -145,6 +145,8 @@ public:
 
     // Player wishes to open help menu
     void help();
+
+    void ending();
 };
 
 enum MainMenuOptions

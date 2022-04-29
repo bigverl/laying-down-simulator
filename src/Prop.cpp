@@ -48,6 +48,12 @@ std::string Prop::getSuccessText() const
     return _successText;
 }
 
+// Returns text response of talking to prop
+std::string Prop::getTalkText() const
+{
+    return _talkText;
+}
+
 // Returns ID that this prop is blocking
 int Prop::getBlockingPropID() const
 {

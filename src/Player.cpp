@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Database.h"
 
 // Creates one instance of Player. If one exists, it returns the existing one.
 Player &Player::getInstance()
@@ -8,42 +9,25 @@ Player &Player::getInstance()
 }
 
 // Returns player's inventory
-std::vector<Prop> *Player::getInventory() const
+const std::vector<int> &Player::getInventory() const
 {
     return _inventory;
 }
 
-// Initializes player inventory to new item
-void Player::initializePlayerInventory()
-{
-    _inventory = new std::vector<Prop>;
-}
-
 // Adds prop to player's inventory
-void Player::addPropToInventory(Prop *toAdd)
+void Player::addPropToInventory(int propID)
 {
-    _inventory->push_back(*toAdd);
-}
-
-// DEBUG: Print player inventory
-void Player::printInventory()
-{
-    std::cout << "Printing inv: \n";
-    for (unsigned long int index = 0; index < PLAYER.getInventory()->size(); index++)
-    {
-        std::cout << "Prop ID: " << PLAYER.getInventory()->at(index).getID() << "\n";
-        std::cout << "Prop Name: " << PLAYER.getInventory()->at(index).getName() << "\n";
-    }
+    _inventory.push_back(propID);
 }
 
 // Returns true if prop is in player's inventory
-bool Player::propInInventory(const int &propID)
+bool Player::propInInventory(int propID)
 {
     bool found = false;
     unsigned long int index = 0;
-    while (!found && index < _inventory->size())
+    while (!found && index < _inventory.size())
     {
-        found = (_inventory->at(index).getID() == propID);
+        found = (DB.getProps()->at(_inventory.at(index)).getID() == propID);
         index++;
     }
     return found;

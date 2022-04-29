@@ -203,8 +203,11 @@ void Game::startAdventure()
     std::cin.ignore();
     CLEAR_SCREEN;
 
-    // Start actual game loop
+    // Start game loop
     gameLoop();
+
+    // Start ending
+    ending();
 }
 
 // This helper function separates each string from a line of text into a separate index of a vector.
@@ -259,10 +262,7 @@ void Game::gameLoop()
     std::string userInput = ""; // Line of input
     int action = -1;            // Action converted to int for switch. Starts out invalid
     int direction = -1;         // Direction converted to int for switch. Starts out invalid
-    bool invalidAction = true;
-    bool invalidArgCount = true;
     bool quitOrInvOrHelp = true;
-    PLAYER.initializePlayerInventory();
 
     // Begin Game Loop
     while (!playerQuit() && !playerWon())
@@ -285,8 +285,17 @@ void Game::gameLoop()
         std::cout << "Exits: \n";
         for (unsigned long int index = 0; index < DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->size(); index++)
         {
-            std::cout << DB.getDirections()->at(DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->at(index)._direction) << " ";
+            int directionChecker = DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->at(index)._direction;
+            if (directionChecker != -1)
+            {
+                std::cout << DB.getDirections()->at(DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->at(index)._direction) << " ";
+            }
+            else
+            {
+                std::cout << "None";
+            }
         }
+
         std::cout << std::endl
                   << std::endl;
         // END DEBUG
@@ -301,11 +310,8 @@ void Game::gameLoop()
         userInput = getInput();
         _command = getCommand(userInput);
 
-        // Validate number of arguments
-        invalidArgCount = hasInvalidCommandArgs();
-
         // If invalid, inform the player
-        if (invalidArgCount)
+        if (hasInvalidCommandArgs())
         {
             std::cout << "Hey, I think you put too many arguments into that command. Try something else!\n";
         }
@@ -375,8 +381,6 @@ void Game::gameLoop()
         }
     } // End while
 }
-
-// Game will check for win or quit condition here automatically
 
 // Returns true if object is blocking exit
 bool Game::exitIsBlocked(const int &direction)
@@ -618,6 +622,8 @@ void Game::solve()
     // Declaration
     const unsigned long int VALID_ARG_COUNT = 3; // Valid argument count for this type of action
     const int NOT_FOUND = -1;
+    const int SCROLL = 9;
+    const int CREDITS = 8;
     std::string keyName = _command->at(ARG1);
     std::string lockName = _command->at(ARG2);
     int keyID = DB.getPropIDByName(keyName);
@@ -663,14 +669,17 @@ void Game::solve()
         DB.getProps()->at(keyID).expire();
         DB.getProps()->at(lockID).expire();
         std::cout << DB.getProps()->at(keyID).getSuccessText() << "\n";
+
+        // I know this is bad but it's happening
+        if (keyID == SCROLL)
+        {
+            movePlayer(CREDITS);
+        }
     }
 }
 // Player attempts to look at prop in room
 void Game::look()
 {
-    // DEBUG STATEMENT
-    // std::cout << "Congratulations, debugger: You're inside look():'\n";
-
     // Declaration
     const int NOT_FOUND = -1;
     int propID = -1;
@@ -697,15 +706,12 @@ void Game::look()
 // Player attempts to pick up prop in room
 void Game::get()
 {
-    // DEBUG:
-    // std::cout << "Congratulations, debugger: You're inside get():'\n";
-
     // Declaration
     const int NOT_FOUND = -1;
     int propID = -1;
     int blockerID = -1;
-    std::string actionName = _command->at(ACTION);
-    std::string propName = _command->at(ARG1);
+    const std::string actionName = _command->at(ACTION);
+    const std::string propName = _command->at(ARG1);
     propID = DB.getPropIDByName(propName);
 
     if (propID == NOT_FOUND) // Prop is not in game
@@ -726,12 +732,13 @@ void Game::get()
     }
     else if ((blockerID = DB.getPropBlockerID(propID)) != NOT_FOUND) // It's blocked
     {
-        std::cout << DB.getProps()->at(blockerID).getBlockerText() << "\n";
+        std::cout << DB.getProps()->at(propID).getBlockerText() << "\n";
     }
     else // Success: Pick it up
     {
-        PLAYER.addPropToInventory(&DB.getProps()->at(propID));
+        PLAYER.addPropToInventory(propID);
         DB.getProps()->at(propID).setPickedUpStatus(true);
+
         std::cout << "You pick up the '" << propName << "' and add it to your inventory.\n";
     }
 
@@ -755,7 +762,31 @@ void Game::pull()
 void Game::talk()
 {
     // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside talk():'\n";
+    // std::cout << "Congratulations, debugger: You're inside talk():'\n";
+
+    // Declaration
+    const int NOT_FOUND = -1;
+    int propID = -1;
+    const std::string actionName = _command->at(ACTION);
+    const std::string propName = _command->at(ARG1);
+    propID = DB.getPropIDByName(propName);
+
+    if (propID == NOT_FOUND) // Prop is not in game
+    {
+        std::cout << "Hmm, you don't see any '" << propName << "' to talk to here.\n";
+    }
+    else if (!propInRoom(propID)) // Prop is not in room
+    {
+        std::cout << "Hmm, you don't see any '" << propName << "' to talk to here.\n";
+    }
+    else if (invalidActionForProp(propID, actionName)) // Action is invalid for prop
+    {
+        std::cout << "Uh, you don't feel like you can talk to the '" << propName << "'.\n";
+    }
+    else // Success: Return talk text
+    {
+        std::cout << DB.getProps()->at(propID).getTalkText();
+    }
 }
 // Player attempts to open prop in room
 void Game::open()
@@ -764,10 +795,10 @@ void Game::open()
     const unsigned long int VALID_ARG_COUNT = 2; // Valid argument count for this type of action
     const int NOT_FOUND = -1;
     int blockerID = -1;
-    std::string propName = _command->at(ARG1);
+    const std::string propName = _command->at(ARG1);
     int propID = DB.getPropIDByName(propName);
-    std::string actionName = "OPEN";
-    std::string errorMsg = "Hmm, you don't see any '" + propName + "' to open.\n";
+    const std::string actionName = _command->at(ACTION);
+    const std::string errorMsg = "Hmm, you don't see any '" + propName + "' to open.\n";
     bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
 
     if (invalidArgCount) // Valid number of arguments
@@ -784,14 +815,15 @@ void Game::open()
     }
     else if (DB.getProps()->at(propID).isExpired()) // Prop is expired
     {
-        std::cout << "That's already open!";
+        std::cout << "That's already open!\n";
     }
     else if (invalidActionForProp(propID, actionName)) // validate prop supports action
     {
-        std::cout << "I don't think you can open the " << propName << " \n.";
+        std::cout << "I don't think you can open the " << propName << ".\n";
     }
-    else if ((blockerID = DB.getPropBlockerID(propID)) == NOT_FOUND) // Prop not blocked
+    else if ((blockerID = DB.getPropBlockerID(propID)) != NOT_FOUND) // Prop not blocked
     {
+        // check for whether or not it is exhausted tho. this messes with the else-if. resolve that
         std::cout << DB.getProps()->at(blockerID).getBlockerText() << "\n";
     }
     else // Success: Expire prop and print the useDescription
@@ -811,12 +843,7 @@ void Game::close()
 // Player wishes to access inventory
 void Game::inventory()
 {
-    // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside inventory():'\n";
-    PLAYER.printInventory();
-    // END DEBUG
-
-    // UI.printInventory(PLAYER.getInventory());
+    UI.printPlayerInventory();
 }
 
 // Player wishes to open help menu
@@ -844,4 +871,42 @@ bool Game::propInRoom(const int &propID)
         index++;
     }
     return found;
+}
+
+// Executes ending
+void Game::ending()
+{
+    const int FISH = 4;
+
+    std::cout << "Congrats, you made it on time for your midterm and you feel pretty good about your grade.\n";
+    printPause();
+    CLEAR_SCREEN;
+
+    // If fish is exhausted, play good ending
+    if (DB.getProps()->at(FISH).isExpired())
+    {
+        // Play good ending here
+        std::cout << "And you saved the fish! What a great pet owner!\n";
+    }
+    else
+    {
+        std::cout << "Unfortunately, you forgot to feed your fish. \n"
+                  << "Some things must be sacrificed in times of great need..\n";
+
+        // Play bad ending here
+    }
+    printPause();
+    CLEAR_SCREEN;
+
+    std::cout << "___________________________________________________\n"
+              << "                  Midterm Madness: \n"
+              << "         Brought to you by Red Circle Studios\n"
+              << "___________________________________________________\n"
+              << "Programming, Design, Architecture:   Weston Mathews\n"
+              << "Room and Prop Descriptions, Puzzles: Dania\n"
+              << "Room Artwork:                        Nick"
+              << "Title Screen:                        Hamid\n"
+              << "Management, Puzzles, Story:          Stephanie \n\n"
+              << "Thanks for playing!!\n\n";
+    printPause();
 }

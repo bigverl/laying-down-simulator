@@ -16,7 +16,7 @@
 class Player
 {
     // Attributes
-    std::vector<Prop> *_inventory; // vector of items in inventory by id
+    std::vector<int> _inventory; // vector of items in inventory by id
 
     // Methods
     Player() = default; // private constructor
@@ -26,19 +26,13 @@ public:
     static Player &getInstance();
 
     // Returns player's inventory
-    std::vector<Prop> *getInventory() const;
-
-    // Initializes player inventory to new item
-    void initializePlayerInventory();
+    const std::vector<int> &getInventory() const;
 
     // Adds prop to player's inventory
-    void addPropToInventory(Prop *toAdd);
-
-    // DEBUG: Print player inventory
-    void printInventory();
+    void addPropToInventory(int propID);
 
     // Returns true if a given prop is in the player's inventory
-    bool propInInventory(const int &propID);
+    bool propInInventory(int propID);
 };
 
 #endif

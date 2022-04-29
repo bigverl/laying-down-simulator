@@ -27,6 +27,24 @@ void UserInterface::printNavigation(const int &id)
 // then reprints current room
 void UserInterface::printPlayerInventory()
 {
+    CLEAR_SCREEN;
+
+    // Placeholder
+    std::cout << "___________________________________________\n"
+              << "Inventory: \n"
+              << "___________________________________________\n"
+              << "Name                           Description\n"
+              << "\n";
+    for (unsigned long int index = 0; index < PLAYER.getInventory().size(); index++)
+    {
+        if (!DB.getProps()->at(PLAYER.getInventory().at(index)).isExpired())
+        {
+            std::cout << DB.getProps()->at(PLAYER.getInventory().at(index)).getName() << "                      "
+                      << DB.getProps()->at(PLAYER.getInventory().at(index)).getLookDescription()
+                      << "\n";
+        }
+    }
+    std::cout << "___________________________________________\n";
 }
 
 // prints title screen
@@ -40,7 +58,7 @@ void UserInterface::printCommands() {}
 // prints main menu
 void UserInterface::printMainMenu()
 {
-    std::cout << "This is the main menu placeholder.\n"
+    std::cout << "Welcome to Midterm Madness!!.\n"
               << "S: Start Game \n"
               << "H: Open Help Screen \n"
               << "Q: Quit Game \n\n";
