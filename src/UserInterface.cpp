@@ -50,6 +50,25 @@ void UserInterface::printPlayerInventory()
 // prints title screen
 void UserInterface::printTitleScreen()
 {
+    std::cout << R"(
+================================================================
+   __   _              __   _               __   ___
+ _(  )_( )_          _(  )_( )_          _(   )_(   )_
+(_Red_Circle_)      (_Presents_)        (_A_Game_For__)
+  (_) (__)            (_) (__)            (_) (_) (__)
+
+
+      ....           ....           ....           ....
+     ||             ||             ||             ||
+ /"""c|\        /"""s|\        /"""u|\        /"""f|\
+/_______\      /_______\      /_______\      /_______\
+|  .-.  |------|  .-.  |------|  .-.  |------|  .-.  |----------
+ __|C|__| .--. |__|P|__| .--. |__|S|__| .--. |__|C|__| .--.-----
+_\  so\\__`ft-wa'__\  \\re__`e-n'__\  \\gi__`ne-er'__\  \\in__`g
+-----------------l---------------------s------------------------
+------c--------------------a----------------------s-------------
+================================================================
+        )";
 }
 
 // prints available commands
@@ -75,4 +94,10 @@ void UserInterface::printHelp()
               << "Command                           Description\n"
 
               << "\n";
+}
+
+void UserInterface::printPause()
+{
+    std::cout << "\nPress <ENTER> to continue\n";
+    std::cin.ignore(); // Pause for <enter>
 }

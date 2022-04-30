@@ -45,8 +45,19 @@ void Game::initialize(const char *path)
     int winRoomPosition = DB.getRooms()->size() - 1;
     _winRoom = DB.getRoom(winRoomPosition)->getID();
 
+    // Launch intro
+    intro();
+
     // Launch main menu
     mainMenu();
+}
+
+void Game::intro()
+{
+    CLEAR_SCREEN;
+    UI.printTitleScreen();
+    printPause();
+    CLEAR_SCREEN;
 }
 
 void Game::mainMenu()
@@ -307,7 +318,7 @@ void Game::gameLoop()
         // END DEBUG
 
         // Print the room's pic and description
-        // printRoom(ID);
+        // printRoom(getPlayerPosition());
 
         // Create new command
         _command = new std::vector<std::string>;

@@ -37,7 +37,7 @@ public:
     //
     void printPlayerInventory();
 
-    // prints title screen
+    // Prints title screen
     void printTitleScreen();
 
     // prints available commands
@@ -47,6 +47,8 @@ public:
     void printMainMenu();
 
     void printHelp();
+
+    void printPause();
 };
 
 #endif

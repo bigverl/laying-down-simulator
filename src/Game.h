@@ -146,6 +146,10 @@ public:
     // Player wishes to open help menu
     void help();
 
+    // Governs intro before main menu
+    void intro();
+
+    // Governs ending and credits
     void ending();
 };
 
