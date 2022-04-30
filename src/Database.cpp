@@ -65,6 +65,8 @@ void Database::initializeDirectionProcessor()
         {"WEST", W},
         {"SOUTH", S},
         {"EAST", E}};
+
+    _directions = new std::vector<std::string>{"NORTH", "WEST", "SOUTH", "EAST"};
 }
 
 int Database::parseDirection(const std::string &toParse)
@@ -473,6 +475,11 @@ std::string Database::getRoomName(const int &id) const
     return "ERROR: ROOM NAME NOT FOUND";
 }
 
+std::vector<std::string> *Database::getDirections()
+{
+    return _directions;
+}
+
 // Player will reference props by name, and so we must retrieve their ID's by name
 int Database::getPropIDByName(std::string name)
 {
@@ -507,7 +514,7 @@ std::vector<Prop> *Database::getProps() const
 }
 
 // Gets prop in origin that blocks destination. Returns -1 if nothing blocking
-int Database::getBlockingPropID(const int &origin, const int &destination)
+int Database::getRoomBlockerID(const int &origin, const int &destination)
 {
     // Get the props in this room
     std::vector<int> *propsInRoom = getRooms()->at(origin).getProps();
@@ -516,22 +523,52 @@ int Database::getBlockingPropID(const int &origin, const int &destination)
     int blockingPropID = -1;
     int blockedRoom = -1;
 
-    // Get the one that's blocking the given room ID
-    while (!found && index < propsInRoom->size())
+    // Don't check if no props
+    int noProps = getRooms()->at(origin).getProps()->at(index);
+    if (noProps != -1)
     {
-        blockedRoom = getProps()->at(propsInRoom->at(index)).getBlockingRoom();
-        found = (destination == blockedRoom);
-
-        if (found)
+        // Get the one that's blocking the given room ID
+        while (!found && index < propsInRoom->size())
         {
-            blockingPropID = getProps()->at(propsInRoom->at(index)).getID();
-        }
+            blockedRoom = getProps()->at(propsInRoom->at(index)).getBlockingRoom();
+            found = (destination == blockedRoom);
 
-        index++;
+            if (found)
+            {
+                blockingPropID = getProps()->at(propsInRoom->at(index)).getID();
+            }
+
+            index++;
+        }
     }
 
     // Return its ID
     return blockingPropID;
+}
+
+// Returns prop blocking this one. Returns -1 if prop is not blocked or if the blocker is exhausted
+int Database::getPropBlockerID(const int &propID)
+{
+    int blockerID = -1;
+    bool found = false;
+    unsigned long int index = 0;
+
+    while (!found && index < DB.getProps()->size())
+    {
+        // if found, and the found prop is not expire, register it
+        found = (propID == DB.getProps()->at(index).getBlockingPropID());
+        if (found && (!DB.getProps()->at(index).isExpired()))
+        {
+            blockerID = DB.getProps()->at(index).getID();
+        }
+        else
+        {
+            index++;
+        }
+    }
+
+    return blockerID;
+    // return that value
 }
 
 // Debug: Returns ID for room adjacent to room ID and direction given. Returns -1 if invalid

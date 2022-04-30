@@ -36,6 +36,7 @@ class Database
     std::map<std::string, int> actionProcessor;    // action list to quickly search and return enum value
     std::map<std::string, int> adjacencyProcessor; // abbreviated direction list to quickly search and return enum value
     std::map<std::string, int> directionProcessor; // direction list to quickly search and return enum value
+    std::vector<std::string> *_directions;
 
     // Methods
     Database() = default; // private constructor
@@ -89,6 +90,9 @@ public:
     // Return room item by ID
     Room *getRoom(const int &id) const;
 
+    // Get directions vector
+    std::vector<std::string> *getDirections();
+
     // Player will reference props by name, and so we must retrieve their ID's by name
     int getPropIDByName(std::string name);
 
@@ -108,7 +112,10 @@ public:
     int getAdjacentRoomID(const int &origin, const int &direction);
 
     // Returns prop in origin that's blocking destination
-    int getBlockingPropID(const int &origin, const int &destination);
+    int getRoomBlockerID(const int &origin, const int &destination);
+
+    // Returns prop blocking this one. Returns -1 if prop is not blocked
+    int getPropBlockerID(const int &propID);
 };
 
 #endif

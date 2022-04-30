@@ -80,7 +80,7 @@ public:
     bool hasInvalidCommandArgs();
 
     // Validates a specific action for correct number of arguments (use, get, etc)
-    bool hasInvalidActionArgs(const int &argCount);
+    bool hasInvalidActionArgs(const unsigned long int &argCount);
 
     // Validate command for valid action (GET, etc)
     bool isInvalidAction(const int &actionToValidate);
@@ -102,6 +102,10 @@ public:
 
     // Returns true if exit is blocked
     bool exitIsBlocked(const int &direction);
+
+    // Returns true if prop is in this room
+    bool propInRoom(const int &propID);
+
     // *** End Validators *** //
 
     // *** Begin Action-Related Methods ** //
@@ -141,6 +145,8 @@ public:
 
     // Player wishes to open help menu
     void help();
+
+    void ending();
 };
 
 enum MainMenuOptions

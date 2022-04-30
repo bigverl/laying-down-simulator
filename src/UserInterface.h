@@ -2,6 +2,7 @@
 #define UI_H
 
 #include <string>
+#include "Player.h"
 
 // This is a macro. You refer to the UserInterface instance as this name when programming
 #define UI (UserInterface::getInstance())

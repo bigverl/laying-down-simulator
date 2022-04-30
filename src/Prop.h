@@ -16,7 +16,7 @@ class Prop
     bool _pickedUp;                   // whether or not item has been picked up by player. Used so player can't pick up items twice
     int _homeRoom;                    // the ID of the item's original location. Used for changing game state in other rooms.
     int _solutionRoom;                // ID of room where prop is meant to be used with SOLVE command
-    int _solutionProp;                // If this prop is a KEY, solutionProp is the LOCk this KEY will unlock
+    int _solutionProp;                // If this prop is a KEY, solutionProp is the LOCK this KEY will unlock
     int _blockingRoom;                // If this prop blocks a room, this is ID of room blocked
     int _blockingProp;                // If this prop blocks another prop, this is the ID of the prop blocked
     std::vector<int> *_validCommands; // This is a list of acceptable commands for this specific item. represented by an enum in main
@@ -47,6 +47,18 @@ public:
     // Returns ID room where this item needs to be used
     int getSolutionRoomID() const;
 
+    // Returns ID of lock this key is meant to solve
+    int getSolutionProp() const;
+
+    // Returns ID that this prop is blocking
+    int getBlockingPropID() const;
+
+    // Returns text response of talking to prop
+    std::string getTalkText() const;
+
+    // Returns message when this KEY is successfully used to solve a puzzle
+    std::string getSuccessText() const;
+
     // Returns prop's description when player enters "LOOK <target>"
     std::string getLookDescription() const;
 
@@ -57,6 +69,8 @@ public:
 
     std::string getBlockerText() const;
 
+    std::string getUseDescription() const;
+
     // Expires item after it has been used fully, and cannot be used again
     void expire();
 
@@ -66,7 +80,7 @@ public:
     // Print for debug
     void print();
 
-    // Full param constructor
+    // Full param constructor (expired always false)
     Prop(const int &id,
          const std::string &name,
          const bool &pickedUp,

@@ -36,6 +36,30 @@ int Prop::getSolutionRoomID() const
     return _solutionRoom;
 }
 
+// Returns ID of LOCK that this KEY solves
+int Prop::getSolutionProp() const
+{
+    return _solutionProp;
+}
+
+// Returns message when this KEY is successfully used to solve a puzzle
+std::string Prop::getSuccessText() const
+{
+    return _successText;
+}
+
+// Returns text response of talking to prop
+std::string Prop::getTalkText() const
+{
+    return _talkText;
+}
+
+// Returns ID that this prop is blocking
+int Prop::getBlockingPropID() const
+{
+    return _blockingProp;
+}
+
 // Returns prop's description when player enters "LOOK <target>"
 std::string Prop::getLookDescription() const
 {
@@ -46,6 +70,12 @@ std::string Prop::getLookDescription() const
 std::vector<int> *Prop::getValidCommands() const
 {
     return _validCommands;
+}
+
+// Returns text when player uses 2-arg use with single item
+std::string Prop::getUseDescription() const
+{
+    return _useDescription;
 }
 
 // Returns true if prop is expired
@@ -101,9 +131,11 @@ void Prop::print()
 }
 
 // Full param constructor
-Prop::Prop(const int &id, const std::string &name, const bool &pickedUp, const int &homeRoom, const int &solutionRoom, const int &solutionProp,
-           const int &blockingRoom, const int &blockingProp, std::vector<int> *validCommands, const std::string &lookDescription,
-           const std::string &useDescription, const std::string &blockerText, const std::string &successText, const std::string &talkText)
+Prop::Prop(const int &id, const std::string &name, const bool &pickedUp, const int &homeRoom,
+           const int &solutionRoom, const int &solutionProp, const int &blockingRoom,
+           const int &blockingProp, std::vector<int> *validCommands, const std::string &lookDescription,
+           const std::string &useDescription, const std::string &blockerText, const std::string &successText,
+           const std::string &talkText)
 {
     _id = id;
     _name = name;
@@ -119,4 +151,5 @@ Prop::Prop(const int &id, const std::string &name, const bool &pickedUp, const i
     _blockerText = blockerText;
     _successText = successText;
     _talkText = talkText;
+    _expired = false;
 }
