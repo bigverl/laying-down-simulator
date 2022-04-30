@@ -502,7 +502,7 @@ bool invalidActionForProp(const int &propID, const std::string &action)
 
 void Game::printPause()
 {
-    std::cout << "Press <ENTER> to continue\n";
+    std::cout << "\nPress <ENTER> to continue\n";
     std::cin.ignore(); // Pause for <enter>
 }
 
@@ -626,6 +626,8 @@ void Game::solve()
     const unsigned long int VALID_ARG_COUNT = 3; // Valid argument count for this type of action
     const int NOT_FOUND = -1;
     const int SCROLL = 9;
+    const int DESK = 13;
+    const int CLASSROOM = 7;
     const int CREDITS = 8;
     std::string keyName = _command->at(ARG1);
     std::string lockName = _command->at(ARG2);
@@ -633,6 +635,8 @@ void Game::solve()
     int lockID = DB.getPropIDByName(lockName);
     std::string actionName = "SOLVE";
     bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
+    const std::string ERR_NO_KEY_FOUND = "You don't seem to have a " + keyName + " to use. \n";
+    const std::string ERR_NO_LOCK_FOUND = "You don't see a " + lockName + " here..\n";
 
     // Code
     if (invalidArgCount) // Valid arguments
@@ -641,27 +645,27 @@ void Game::solve()
     }
     else if (keyID == NOT_FOUND) // Key is in game
     {
-        std::cout << "You don't seem to have a " << keyName << " to use. \n";
+        std::cout << ERR_NO_KEY_FOUND;
     }
     else if (lockID == NOT_FOUND) // Lock is in game
     {
-        std::cout << "You don't see a " << lockName << " here..\n";
+        std::cout << ERR_NO_LOCK_FOUND;
     }
     else if (!PLAYER.propInInventory(keyID)) // Key is in player inventory
     {
-        std::cout << "You don't seem to have a " << keyName << " to use. \n";
+        std::cout << ERR_NO_KEY_FOUND;
     }
     else if (!propInRoom(lockID)) // Lock is in room
     {
-        std::cout << "You don't see a " << lockName << " here..\n";
+        std::cout << ERR_NO_LOCK_FOUND;
     }
     else if (DB.getProps()->at(keyID).isExpired()) // Key is not expired
     {
-        std::cout << "You don't seem to have a " << keyName << " to use. \n";
+        std::cout << ERR_NO_KEY_FOUND;
     }
     else if (invalidActionForProp(keyID, actionName)) // Key supports 'solve' command
     {
-        std::cout << "I don't think that can be used like that.";
+        std::cout << "I don't think the " << keyName << " can be used like that.";
     }
     else if ((DB.getProps()->at(keyID).getSolutionProp()) != lockID) // Key's solutionProp == Lock
     {
@@ -676,6 +680,10 @@ void Game::solve()
         // I know this is bad but it's happening
         if (keyID == SCROLL)
         {
+            movePlayer(CLASSROOM);
+        }
+        else if (keyID == DESK)
+        {
             movePlayer(CREDITS);
         }
     }
@@ -688,18 +696,19 @@ void Game::look()
     int propID = -1;
     std::string propName = _command->at(ARG1);
     propID = DB.getPropIDByName(propName);
+    const std::string errMsg = "Hmm, you don't see any " + propName + " to look at here.\n";
 
     if (propID == NOT_FOUND) // Prop does not exist in game
     {
-        std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
+        std::cout << errMsg;
     }
     else if (!propInRoom(propID)) // Prop is in room
     {
-        std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
+        std::cout << errMsg;
     }
     else if (DB.getProps()->at(propID).isPickedUp()) // Prop has not been picked up yet
     {
-        std::cout << "Hmm, you don't see any '" << propName << "' to look at here.\n";
+        std::cout << errMsg;
     }
     else // Success: Return description
     {
@@ -716,22 +725,23 @@ void Game::get()
     const std::string actionName = _command->at(ACTION);
     const std::string propName = _command->at(ARG1);
     propID = DB.getPropIDByName(propName);
+    const std::string errMsg = "Hmm, you don't see any " + propName + " to pick up here.\n";
 
     if (propID == NOT_FOUND) // Prop is not in game
     {
-        std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
+        std::cout << errMsg;
     }
     else if (!propInRoom(propID)) // Prop is not in room
     {
-        std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
+        std::cout << errMsg;
     }
     else if (invalidActionForProp(propID, actionName)) // Action is invalid for prop
     {
-        std::cout << "Uh, you don't feel like you can pick up the '" << propName << "'.\n";
+        std::cout << errMsg;
     }
     else if (DB.getProps()->at(propID).isPickedUp()) // Prop is already picked up
     {
-        std::cout << "Hmm, you don't see any '" << propName << "' to pick up here.\n";
+        std::cout << errMsg;
     }
     else if ((blockerID = DB.getPropBlockerID(propID)) != NOT_FOUND) // It's blocked
     {
@@ -756,32 +766,31 @@ void Game::push()
     const std::string propName = _command->at(ARG1);
     int propID = DB.getPropIDByName(propName);
     const std::string actionName = _command->at(ACTION);
-    const std::string errorMsg = "Hmm, you don't see any '" + propName + "' to push.\n";
+    const std::string errMsg = "Hmm, you don't see any '" + propName + "' to push.\n";
     bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
 
     if (invalidArgCount) // Valid number of arguments
     {
-        std::cout << "Too many arguments. If you're trying to 'push' something, try 'push <prop>'\n";
+        std::cout << "\nToo many arguments. If you're trying to 'push' something, try 'push <prop>'\n";
     }
     else if (propID == NOT_FOUND) // Prop in game
     {
-        std::cout << errorMsg;
+        std::cout << errMsg;
     }
     else if (!propInRoom(propID)) // Prop in room
     {
-        std::cout << errorMsg;
+        std::cout << errMsg;
     }
     else if (DB.getProps()->at(propID).isExpired()) // Prop is expired
     {
-        std::cout << "You already pushed it!\n";
+        std::cout << "\nYou already pushed it!\n";
     }
     else if (invalidActionForProp(propID, actionName)) // validate prop supports action
     {
-        std::cout << "I don't think you can push the " << propName << ".\n";
+        std::cout << "\nI don't think you can push the " << propName << ".\n";
     }
     else if ((blockerID = DB.getPropBlockerID(propID)) != NOT_FOUND) // Prop not blocked
     {
-        // check for whether or not it is exhausted tho. this messes with the else-if. resolve that
         std::cout << DB.getProps()->at(blockerID).getBlockerText() << "\n";
     }
     else // Success: Expire prop and print the useDescription
@@ -800,7 +809,7 @@ void Game::pull()
     const std::string propName = _command->at(ARG1);
     int propID = DB.getPropIDByName(propName);
     const std::string actionName = _command->at(ACTION);
-    const std::string errorMsg = "Hmm, you don't see any '" + propName + "' to pull.\n";
+    const std::string errMsg = "Hmm, you don't see any '" + propName + "' to pull.\n";
     bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
 
     if (invalidArgCount) // Valid number of arguments
@@ -809,11 +818,11 @@ void Game::pull()
     }
     else if (propID == NOT_FOUND) // Prop in game
     {
-        std::cout << errorMsg;
+        std::cout << errMsg;
     }
     else if (!propInRoom(propID)) // Prop in room
     {
-        std::cout << errorMsg;
+        std::cout << errMsg;
     }
     else if (DB.getProps()->at(propID).isExpired()) // Prop is expired
     {
@@ -842,15 +851,16 @@ void Game::talk()
     int propID = -1;
     const std::string actionName = _command->at(ACTION);
     const std::string propName = _command->at(ARG1);
+    const std::string errMsg = "Hmm, you don't see any " + propName + " to talk to here.\n";
     propID = DB.getPropIDByName(propName);
 
     if (propID == NOT_FOUND) // Prop is not in game
     {
-        std::cout << "Hmm, you don't see any '" << propName << "' to talk to here.\n";
+        std::cout << errMsg;
     }
     else if (!propInRoom(propID)) // Prop is not in room
     {
-        std::cout << "Hmm, you don't see any '" << propName << "' to talk to here.\n";
+        std::cout << errMsg;
     }
     else if (invalidActionForProp(propID, actionName)) // Action is invalid for prop
     {
