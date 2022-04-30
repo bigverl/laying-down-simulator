@@ -68,11 +68,11 @@ void UserInterface::printHelp()
 {
     CLEAR_SCREEN;
 
-    // Placeholder start
-    std::cout << "This is a placeholder for HELP MENU\n";
-    // Placeholder end
+    // Placeholder
+    std::cout << "___________________________________________\n"
+              << "Help: \n"
+              << "___________________________________________\n"
+              << "Command                           Description\n"
 
-    std::cout << "Press <ENTER> to continue";
-    std::cin.ignore(); // Pause for <enter>
-    CLEAR_SCREEN;
+              << "\n";
 }

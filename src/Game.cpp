@@ -970,10 +970,7 @@ void Game::inventory()
 // Player wishes to open help menu
 void Game::help()
 {
-    // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside help():'\n";
-
-    // UI.printHelp();
+    UI.printHelp();
 }
 
 void Game::movePlayer(const int &destination)
