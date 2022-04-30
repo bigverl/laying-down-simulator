@@ -277,7 +277,12 @@ void Game::gameLoop()
         std::cout << "Props: \n";
         for (unsigned long int index = 0; index < DB.getRooms()->at(getPlayerPosition()).getProps()->size(); index++)
         {
-            std::cout << DB.getProps()->at(DB.getRooms()->at(getPlayerPosition()).getProps()->at(index)).getName() << " ";
+            // Don't print if empty
+            int noProps = DB.getRooms()->at(getPlayerPosition()).getProps()->at(index);
+            if (noProps != -1)
+            {
+                std::cout << DB.getProps()->at(DB.getRooms()->at(getPlayerPosition()).getProps()->at(index)).getName() << " ";
+            }
         }
         std::cout << std::endl
                   << std::endl;
@@ -285,8 +290,9 @@ void Game::gameLoop()
         std::cout << "Exits: \n";
         for (unsigned long int index = 0; index < DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->size(); index++)
         {
-            int directionChecker = DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->at(index)._direction;
-            if (directionChecker != -1)
+            // Don't print if empty
+            int noExits = DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->at(index)._direction;
+            if (noExits != -1)
             {
                 std::cout << DB.getDirections()->at(DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->at(index)._direction) << " ";
             }
@@ -616,9 +622,6 @@ void Game::use()
 // Player attempts to use a key to solve a lock
 void Game::solve()
 {
-    // DEBUG STATEMENT
-    // std::cout << "Congratulations, debugger: You're inside solve():'\n";
-
     // Declaration
     const unsigned long int VALID_ARG_COUNT = 3; // Valid argument count for this type of action
     const int NOT_FOUND = -1;
@@ -741,29 +744,99 @@ void Game::get()
 
         std::cout << "You pick up the '" << propName << "' and add it to your inventory.\n";
     }
-
-    // DEBUG: Print player inventory
-    // PLAYER.printInventory();
 }
 
 // Player attempts to push prop in room
 void Game::push()
 {
-    // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside push():'\n";
+    // Declaration
+    const unsigned long int VALID_ARG_COUNT = 2; // Valid argument count for this type of action
+    const int NOT_FOUND = -1;
+    int blockerID = -1;
+    const std::string propName = _command->at(ARG1);
+    int propID = DB.getPropIDByName(propName);
+    const std::string actionName = _command->at(ACTION);
+    const std::string errorMsg = "Hmm, you don't see any '" + propName + "' to push.\n";
+    bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
+
+    if (invalidArgCount) // Valid number of arguments
+    {
+        std::cout << "Too many arguments. If you're trying to 'push' something, try 'push <prop>'\n";
+    }
+    else if (propID == NOT_FOUND) // Prop in game
+    {
+        std::cout << errorMsg;
+    }
+    else if (!propInRoom(propID)) // Prop in room
+    {
+        std::cout << errorMsg;
+    }
+    else if (DB.getProps()->at(propID).isExpired()) // Prop is expired
+    {
+        std::cout << "You already pushed it!\n";
+    }
+    else if (invalidActionForProp(propID, actionName)) // validate prop supports action
+    {
+        std::cout << "I don't think you can push the " << propName << ".\n";
+    }
+    else if ((blockerID = DB.getPropBlockerID(propID)) != NOT_FOUND) // Prop not blocked
+    {
+        // check for whether or not it is exhausted tho. this messes with the else-if. resolve that
+        std::cout << DB.getProps()->at(blockerID).getBlockerText() << "\n";
+    }
+    else // Success: Expire prop and print the useDescription
+    {
+        DB.getProps()->at(propID).expire();
+        std::cout << DB.getProps()->at(propID).getUseDescription() << "\n";
+    }
 }
 // Player attempts to push prop in room
 void Game::pull()
 {
-    // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside pull():'\n";
+    // Declaration
+    const unsigned long int VALID_ARG_COUNT = 2; // Valid argument count for this type of action
+    const int NOT_FOUND = -1;
+    int blockerID = -1;
+    const std::string propName = _command->at(ARG1);
+    int propID = DB.getPropIDByName(propName);
+    const std::string actionName = _command->at(ACTION);
+    const std::string errorMsg = "Hmm, you don't see any '" + propName + "' to pull.\n";
+    bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
+
+    if (invalidArgCount) // Valid number of arguments
+    {
+        std::cout << "Too many arguments. If you're trying to 'pull' something, try 'pull <prop>'\n";
+    }
+    else if (propID == NOT_FOUND) // Prop in game
+    {
+        std::cout << errorMsg;
+    }
+    else if (!propInRoom(propID)) // Prop in room
+    {
+        std::cout << errorMsg;
+    }
+    else if (DB.getProps()->at(propID).isExpired()) // Prop is expired
+    {
+        std::cout << "You already pulled that!\n";
+    }
+    else if (invalidActionForProp(propID, actionName)) // validate prop supports action
+    {
+        std::cout << "I don't think you can pull the " << propName << ".\n";
+    }
+    else if ((blockerID = DB.getPropBlockerID(propID)) != NOT_FOUND) // Prop not blocked
+    {
+        // check for whether or not it is exhausted tho. this messes with the else-if. resolve that
+        std::cout << DB.getProps()->at(blockerID).getBlockerText() << "\n";
+    }
+    else // Success: Expire prop and print the useDescription
+    {
+        DB.getProps()->at(propID).expire();
+        std::cout << DB.getProps()->at(propID).getUseDescription() << "\n";
+    }
 }
 // Player attempts to talk to prop in room
 void Game::talk()
 {
-    // DEBUG STATEMENT
-    // std::cout << "Congratulations, debugger: You're inside talk():'\n";
-
     // Declaration
     const int NOT_FOUND = -1;
     int propID = -1;
@@ -836,8 +909,46 @@ void Game::open()
 // Player attempts to close prop in room
 void Game::close()
 {
-    // DEBUG STATEMENT
-    std::cout << "Congratulations, debugger: You're inside close():'\n";
+    // Declaration
+    const unsigned long int VALID_ARG_COUNT = 2; // Valid argument count for this type of action
+    const int NOT_FOUND = -1;
+    int blockerID = -1;
+    const std::string propName = _command->at(ARG1);
+    int propID = DB.getPropIDByName(propName);
+    const std::string actionName = _command->at(ACTION);
+    const std::string errorMsg = "Hmm, you don't see any '" + propName + "' to close.\n";
+    bool invalidArgCount = hasInvalidActionArgs(VALID_ARG_COUNT);
+
+    if (invalidArgCount) // Valid number of arguments
+    {
+        std::cout << "Too many arguments. If you're trying to 'close' something, try 'close <prop>'\n";
+    }
+    else if (propID == NOT_FOUND) // Prop in game
+    {
+        std::cout << errorMsg;
+    }
+    else if (!propInRoom(propID)) // Prop in room
+    {
+        std::cout << errorMsg;
+    }
+    else if (DB.getProps()->at(propID).isExpired()) // Prop is expired
+    {
+        std::cout << "That's already closed!\n";
+    }
+    else if (invalidActionForProp(propID, actionName)) // validate prop supports action
+    {
+        std::cout << "I don't think you can close the " << propName << ".\n";
+    }
+    else if ((blockerID = DB.getPropBlockerID(propID)) != NOT_FOUND) // Prop not blocked
+    {
+        // check for whether or not it is exhausted tho. this messes with the else-if. resolve that
+        std::cout << DB.getProps()->at(blockerID).getBlockerText() << "\n";
+    }
+    else // Success: Expire prop and print the useDescription
+    {
+        DB.getProps()->at(propID).expire();
+        std::cout << DB.getProps()->at(propID).getUseDescription() << "\n";
+    }
 }
 
 // Player wishes to access inventory
@@ -903,10 +1014,11 @@ void Game::ending()
               << "         Brought to you by Red Circle Studios\n"
               << "___________________________________________________\n"
               << "Programming, Design, Architecture:   Weston Mathews\n"
-              << "Room and Prop Descriptions, Puzzles: Dania\n"
-              << "Room Artwork:                        Nick"
-              << "Title Screen:                        Hamid\n"
-              << "Management, Puzzles, Story:          Stephanie \n\n"
+              << "Room and Prop Descriptions, Puzzles: Dania Nasereddin\n"
+              << "Room Artwork:                        Nicholas Jones\n"
+              << "Title Screen:                        Hamid Suha\n"
+              << "Management, Puzzles, Story:          Stephanie Pocci\n"
+              << "___________________________________________________\n\n"
               << "Thanks for playing!!\n\n";
     printPause();
 }

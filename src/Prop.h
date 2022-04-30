@@ -80,7 +80,7 @@ public:
     // Print for debug
     void print();
 
-    // Full param constructor
+    // Full param constructor (expired always false)
     Prop(const int &id,
          const std::string &name,
          const bool &pickedUp,

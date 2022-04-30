@@ -523,18 +523,23 @@ int Database::getRoomBlockerID(const int &origin, const int &destination)
     int blockingPropID = -1;
     int blockedRoom = -1;
 
-    // Get the one that's blocking the given room ID
-    while (!found && index < propsInRoom->size())
+    // Don't check if no props
+    int noProps = getRooms()->at(origin).getProps()->at(index);
+    if (noProps != -1)
     {
-        blockedRoom = getProps()->at(propsInRoom->at(index)).getBlockingRoom();
-        found = (destination == blockedRoom);
-
-        if (found)
+        // Get the one that's blocking the given room ID
+        while (!found && index < propsInRoom->size())
         {
-            blockingPropID = getProps()->at(propsInRoom->at(index)).getID();
-        }
+            blockedRoom = getProps()->at(propsInRoom->at(index)).getBlockingRoom();
+            found = (destination == blockedRoom);
 
-        index++;
+            if (found)
+            {
+                blockingPropID = getProps()->at(propsInRoom->at(index)).getID();
+            }
+
+            index++;
+        }
     }
 
     // Return its ID

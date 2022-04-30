@@ -131,9 +131,11 @@ void Prop::print()
 }
 
 // Full param constructor
-Prop::Prop(const int &id, const std::string &name, const bool &pickedUp, const int &homeRoom, const int &solutionRoom, const int &solutionProp,
-           const int &blockingRoom, const int &blockingProp, std::vector<int> *validCommands, const std::string &lookDescription,
-           const std::string &useDescription, const std::string &blockerText, const std::string &successText, const std::string &talkText)
+Prop::Prop(const int &id, const std::string &name, const bool &pickedUp, const int &homeRoom,
+           const int &solutionRoom, const int &solutionProp, const int &blockingRoom,
+           const int &blockingProp, std::vector<int> *validCommands, const std::string &lookDescription,
+           const std::string &useDescription, const std::string &blockerText, const std::string &successText,
+           const std::string &talkText)
 {
     _id = id;
     _name = name;
@@ -149,4 +151,5 @@ Prop::Prop(const int &id, const std::string &name, const bool &pickedUp, const i
     _blockerText = blockerText;
     _successText = successText;
     _talkText = talkText;
+    _expired = false;
 }
