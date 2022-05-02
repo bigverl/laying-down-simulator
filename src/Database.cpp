@@ -56,6 +56,20 @@ void Database::initializeActionProcessor()
         {"HELP", HELP},
         {"QUIT", QUIT},
         {"INVENTORY", INVENTORY}};
+
+    _actions = new std::vector<std::string>{
+        "USE",
+        "LOOK",
+        "GET",
+        "PUSH",
+        "PULL",
+        "TALK",
+        "OPEN",
+        "CLOSE",
+        "SOLVE",
+        "HELP",
+        "QUIT",
+        "INVENTORY"};
 }
 
 void Database::initializeDirectionProcessor()
@@ -475,9 +489,22 @@ std::string Database::getRoomName(const int &id) const
     return "ERROR: ROOM NAME NOT FOUND";
 }
 
+// Get directions vector
 std::vector<std::string> *Database::getDirections()
 {
     return _directions;
+}
+
+// Get actions vector
+std::vector<std::string> *Database::getActions()
+{
+    return _actions;
+}
+
+// Get roomnames vector
+std::vector<std::string> *Database::getRoomNames()
+{
+    return _roomNames;
 }
 
 // Player will reference props by name, and so we must retrieve their ID's by name
@@ -593,4 +620,99 @@ int Database::getAdjacentRoomID(const int &origin, const int &direction)
     }
 
     return adjacentRoomID;
+}
+
+// Creates room descriptions and allocates them to room objects
+void Database::initializeRoomDescriptions()
+{
+    auto ss = std::ostringstream{};
+    std::string desc = "";
+    _roomNames = new std::vector<std::string>{
+        "Your Bedroom",
+        "The Kitchen",
+        "A Dark Scary Tunnel",
+        "Secret Tunnels (Hub)",
+        "Secret Tunnels (North)",
+        "Secret Tunnels (South)",
+        "Secret Tunnels (East)",
+        "Your Classroom"};
+
+    ss << "This is your bedroom. It’s kind of small and there’s only room for a full-sized bed, a bedside\n"
+       << "table, and a dresser. You haven’t had much time to clean it since you’ve been bombarded with\n"
+       << "projects and midterms just before spring break. On the floor is a pile of CLOTHES that have\n"
+       << "been sitting there for a while. On top of your bedside table, there’s an alarm clock, lamp, your\n"
+       << "KEYS, and some miscellaneous junk. On your dresser is a bunch of collectible figurines from \n"
+       << "various video games. You should really get around to cleaning this mess.\n";
+    desc = ss.str();
+    rooms->at(0).setDescriptionTextDefault(desc);
+    ss.str("");
+
+    ss << "This is your shared kitchen. There’s a sink full of dishes your roommate never washed, cabinets,\n"
+       << "and a fridge. On the counter is your beloved pet fish. The fish is swimming around in the tank that\n"
+       << "you managed to put together. The cabinets are full of both healthy and unhealthy snacks,\n"
+       << "spices, cups, and dishes. The fridge is barely stocked and full of leftovers. There’s a bunch of\n"
+       << "energy drinks lined up along the fridge door along with some condiments. On top of the fridge is\n"
+       << "some fish FOOD. Across the kitchen is your banged up front DOOR. It seems like a lot of things\n"
+       << "in this apartment need some work.\n";
+    desc = ss.str();
+    rooms->at(1).setDescriptionTextDefault(desc);
+    ss.str("");
+
+    ss << "You decide to take a shortcut through the tunnels connecting your dorm room to the CS building.\n"
+       << "You don't remember it being this spooky or dark down here. After a moment, you catch a glimpse\n"
+       << "of what seems to be a pile of bones in the darkness. As your eyes adjust, you notice a FLASHLIGHT\n"
+       << "lying near the skeleton. That’s not a good sign. You hope that won't be your fate as well.\n";
+    desc = ss.str();
+    rooms->at(2).setDescriptionTextDefault(desc);
+    ss.str("");
+
+    ss << "Now flooded with light, you can now see your surroundings. You look around and spot some sort\n"
+       << "of MACHINE sitting lifelessly. It looks old and beat up, like it hasn’t been used in a long\n"
+       << "time. You wonder how it ended up down here and what it was once used for. There seem to be\n"
+       << "other tunnels branching out from every direction. Near the east is a sign that reads:\n"
+       << "\"SHORTCUT TO CS BUILDING THIS WAY ---->\"\n";
+    desc = ss.str();
+    rooms->at(3).setDescriptionTextDefault(desc);
+    ss.str("");
+
+    ss << "You decide to travel to the north tunnel. You instantly get startled by a GHOST, but after some\n"
+       << "observation it seems to be harmless. The GHOST seems too focused on their task at hand to\n"
+       << "notice you. Next to the GHOST is a weird lump of MEAT. It seems like it’s been sitting there\n"
+       << "for a while. Gross.\n";
+    desc = ss.str();
+    rooms->at(4).setDescriptionTextDefault(desc);
+    ss.str("");
+
+    ss << "You decide to travel to the south tunnel. There is a scary-looking DOG blocking your way. It\n"
+       << "looks like it hasn't had a meal since the last time the administration had to deal with the\n"
+       << "adjunct faculty demanding a living wage. It also seems particularly protective of a large\n"
+       << "ROCK near the back of the cavern.\n";
+    desc = ss.str();
+    rooms->at(5).setDescriptionTextDefault(desc);
+    ss.str("");
+
+    ss << "You excitedly head through the eastern tunnel only to find that there's been a cave-in.\n"
+       << "Investigating the debris, you remember that the university has recently demolished part of\n"
+       << "the CS building to install another Starbucks on campus. You seem to recall the Deputy Assistant\n"
+       << "to the Vice Provost of Student Capital Relations ensuring the students that the decrease in\n"
+       << "classrooms would only increase class sizes by 28.6%, which was well within the parameters of \n"
+       << "the school's mission statement. Regardless, it looks like you're going to need to find another\n"
+       << "way to get to class.\n";
+    desc = ss.str();
+    rooms->at(6).setDescriptionTextDefault(desc);
+    ss.str("");
+
+    ss << "You shriek through time and space for what seems like an eternity until the portal spits you out\n"
+       << "near the back of a classroom. You feel lucky to have survived! Equally fortuitous is that no one\n"
+       << "noticed the tear in the void because everyone's too busy bragging about many hours they've clocked\n"
+       << "in Elden Ring instead of studying for the midterm. You hear a few announcements of \"D's get degrees\"\n"
+       << "as the portal closes.\n"
+       << "\n"
+       << "It seems that not only have you arrived in the correct classroom, but you're just in time!\n"
+       << "You brush off the overwhelming feeling of existential dread and notice that your professor has just\n"
+       << "started handing out exams. Scanning the room, you find a single empty left-handed DESK to sit in.\n"
+       << "Better hurry, or you'll forget to put your name on the exam like last time!\n";
+    desc = ss.str();
+    rooms->at(7).setDescriptionTextDefault(desc);
+    ss.str("");
 }

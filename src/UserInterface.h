@@ -24,20 +24,20 @@ public:
     static UserInterface &getInstance();
 
     // prints room description given a room's ID
-    void printRoomDescription(const int &id);
+    void printRoomDescription(const int &roomID);
 
     // prints the available navigation directions derived from room's id
     // compared to adj list
-    void printNavigation(const int &id);
+    void printNavigation(const int &roomID);
 
     // Prints player inventory, probably also says 'press enter to continue'
     // then reprints current room
-    void printInventoryScreen();
-
-    //
     void printPlayerInventory();
 
-    // prints title screen
+    // Prints room with component parts
+    void printRoom(const int &roomID);
+
+    // Prints title screen
     void printTitleScreen();
 
     // prints available commands
@@ -46,7 +46,17 @@ public:
     // prints main menu
     void printMainMenu();
 
+    // Prints help screen
     void printHelp();
+
+    // Pause and press enter to continue
+    void printPause();
+
+    // Prints good ending
+    void printGoodEnding();
+
+    // Prints bad ending
+    void printBadEnding();
 };
 
 #endif

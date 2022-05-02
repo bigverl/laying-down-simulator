@@ -33,19 +33,31 @@ std::vector<AdjacentRoom> *Room::getAdjacentRooms() const
 // TODO: returns room description
 std::string Room::getDescriptionTextDefault() const
 {
-    return "";
+    return _descriptionTextDefault;
 }
 
 // TODO: returns room description
 std::string Room::getDescriptionTextSolved() const
 {
-    return "";
+    return _descriptionTextSolved;
 }
 
 // TODO: returns room pic in ascii
 std::string Room::getPic() const
 {
-    return "";
+    return _descriptionPic;
+}
+
+// Sets room description
+void Room::setDescriptionTextDefault(const std::string &descriptionText)
+{
+    _descriptionTextDefault = descriptionText;
+}
+
+// Sets room picture
+void Room::setDescriptionPic(const std::string &descriptionPic)
+{
+    _descriptionPic = descriptionPic;
 }
 
 void Room::print()
