@@ -36,7 +36,9 @@ class Database
     std::map<std::string, int> actionProcessor;    // action list to quickly search and return enum value
     std::map<std::string, int> adjacencyProcessor; // abbreviated direction list to quickly search and return enum value
     std::map<std::string, int> directionProcessor; // direction list to quickly search and return enum value
-    std::vector<std::string> *_directions;
+    std::vector<std::string> *_directions;         // List of directions
+    std::vector<std::string> *_actions;            // List of commands
+    std::vector<std::string> *_roomNames;          // List of room names
 
     // Methods
     Database() = default; // private constructor
@@ -53,6 +55,9 @@ public:
 
     // Initializes direction processing tool
     void initializeAdjacencyProcessor();
+
+    // Creates room descriptions and allocates them to room objects
+    void initializeRoomDescriptions();
 
     // Parses an action passed as string to int value to be used in enum
     int parseAction(const std::string &toParse);
@@ -92,6 +97,12 @@ public:
 
     // Get directions vector
     std::vector<std::string> *getDirections();
+
+    // Get actions vector
+    std::vector<std::string> *getActions();
+
+    // Get roomnames vector
+    std::vector<std::string> *getRoomNames();
 
     // Player will reference props by name, and so we must retrieve their ID's by name
     int getPropIDByName(std::string name);

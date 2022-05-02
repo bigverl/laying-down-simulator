@@ -55,6 +55,12 @@ public:
     // returns room default description
     std::string getDescriptionTextDefault() const;
 
+    // Sets room description
+    void setDescriptionTextDefault(const std::string &descriptionText);
+
+    // Sets room picture
+    void setDescriptionPic(const std::string &descriptionPic);
+
     // returns room description after one 'solve' (optional)
     std::string getDescriptionTextSolved() const;
 

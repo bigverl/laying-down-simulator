@@ -38,6 +38,15 @@ void Game::initialize(const char *path)
     DB.initializeDirectionProcessor(); // Player direction input processor
     DB.setFilePath(path);              // Set database file path
     DB.import();                       // Import DB data into program
+    DB.initializeRoomDescriptions();   // Set room descriptions
+
+    // // DEBUG
+    // for (unsigned long int index = 0; index < DB.getRooms()->size(); index++)
+    // {
+    //     std::cout << DB.getRooms()->at(index).getDescriptionTextDefault() << "\n\n";
+    // }
+    // // END DEBUG
+    // printPause();
 
     // Set game attributes
     _winStatus = false;
@@ -205,12 +214,29 @@ void Game::startAdventure()
 {
     CLEAR_SCREEN;
     // Placeholder start
-    std::cout << "This is a placeholder for START GAME.\n"
-              << "It's where all the intro text will go.\n";
+    std::cout << "_________________________________________________________________________________________\n"
+              << "...What time is it? Ugh, you shouldn't have drank all those Mountain Dew Code Reds last\n"
+              << "night. Oh no, is it that late already? You're going to be late for your CS midterm!\n"
+              << "\n"
+              << "Unfortunately, you realize you won't make it in time if you park in your normal parking\n"
+              << "space given that the only spot you can get is a half a mile away from the CS building.\n"
+              << "Things were a lot easier before the administration decided to build a shopping center\n"
+              << "on top of your favorite parking lot.\n"
+              << "\n"
+              << "You consider skipping the midterm altogether, but then remember that your mom said that\n"
+              << "if you fail another class your mom said she's going to stop doing your laundry, and your\n"
+              << "dad said he's going to stop paying for your vidja allowance.\n"
+              << "\n"
+              << "You remember that your psychotic roommate said that when he very rarely decides to attend\n"
+              << "class, he always takes the -secret tunnels- that connect your dorm directly to the CS\n"
+              << "building. You heard they were haunted and dangerous, but you guess that you don't really\n"
+              << "have a choice, do you?\n"
+              << "_________________________________________________________________________________________\n";
 
     // Placeholder end
 
-    std::cout << "\nPress <ENTER> to begin your adventure..\n";
+    std::cout
+        << "\nPress <ENTER> to begin your adventure..\n";
     std::cin.ignore();
     CLEAR_SCREEN;
 
@@ -259,9 +285,6 @@ std::vector<std::string> *Game::getCommand(std::string line)
         {
             c = (char)toupper(c);
         }
-
-        // DEBUG: Print toupper'd commands in vector
-        // std::cout << "Command string at index " << index << " is: " << command->at(index) << std::endl;
     }
 
     return command;
@@ -278,47 +301,8 @@ void Game::gameLoop()
     // Begin Game Loop
     while (!playerQuit() && !playerWon())
     {
-        // DEBUG STUB
-        // Print room name
-        std::cout << "Current Room: " << getPlayerPosition() << " - "
-                  << DB.getRooms()->at(getPlayerPosition()).getName() << "\n\n";
-        // Print props
-
-        // Print arr
-        std::cout << "Props: \n";
-        for (unsigned long int index = 0; index < DB.getRooms()->at(getPlayerPosition()).getProps()->size(); index++)
-        {
-            // Don't print if empty
-            int noProps = DB.getRooms()->at(getPlayerPosition()).getProps()->at(index);
-            if (noProps != -1)
-            {
-                std::cout << DB.getProps()->at(DB.getRooms()->at(getPlayerPosition()).getProps()->at(index)).getName() << " ";
-            }
-        }
-        std::cout << std::endl
-                  << std::endl;
-
-        std::cout << "Exits: \n";
-        for (unsigned long int index = 0; index < DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->size(); index++)
-        {
-            // Don't print if empty
-            int noExits = DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->at(index)._direction;
-            if (noExits != -1)
-            {
-                std::cout << DB.getDirections()->at(DB.getRooms()->at(getPlayerPosition()).getAdjacentRooms()->at(index)._direction) << " ";
-            }
-            else
-            {
-                std::cout << "None";
-            }
-        }
-
-        std::cout << std::endl
-                  << std::endl;
-        // END DEBUG
-
-        // Print the room's pic and description
-        // printRoom(getPlayerPosition());
+        // Print current room
+        UI.printRoom(getPlayerPosition());
 
         // Create new command
         _command = new std::vector<std::string>;
@@ -326,6 +310,7 @@ void Game::gameLoop()
         // Get input, create command
         userInput = getInput();
         _command = getCommand(userInput);
+        std::cout << std::endl;
 
         // If invalid, inform the player
         if (hasInvalidCommandArgs())
