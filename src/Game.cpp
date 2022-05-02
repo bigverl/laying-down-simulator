@@ -122,6 +122,7 @@ void Game::mainMenu()
             break;
         case M_HELP:
             UI.printHelp();
+            printPause();
             break;
         default:
             break;
@@ -992,7 +993,10 @@ void Game::ending()
 {
     const int FISH = 4;
 
-    std::cout << "Congrats, you made it on time for your midterm and you feel pretty good about your grade.\n";
+    std::cout << "__________________________________________________________\n"
+              << "Congrats, you made it on time for your midterm and you\n"
+              << "         feel pretty good about your grade.\n"
+              << "__________________________________________________________\n";
     printPause();
     CLEAR_SCREEN;
 
@@ -1000,14 +1004,19 @@ void Game::ending()
     if (DB.getProps()->at(FISH).isExpired())
     {
         // Play good ending here
-        std::cout << "And you saved the fish! What a great pet owner!\n";
+        std::cout << "        __________________________________________________________\n"
+                  << "                        And you saved Bubbles! \n"
+                  << "                       What a great pet owner!";
+        UI.printGoodEnding();
     }
     else
     {
-        std::cout << "Unfortunately, you forgot to feed your fish. \n"
-                  << "Some things must be sacrificed in times of great need..\n";
-
         // Play bad ending here
+        std::cout << "        __________________________________________________________\n"
+                  << "                Unfortunately, you forgot to feed Bubbles.\n"
+                  << "                 Some things must be sacrificed in\n"
+                  << "                         times of great need..";
+        UI.printBadEnding();
     }
     printPause();
     CLEAR_SCREEN;

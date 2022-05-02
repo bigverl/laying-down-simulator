@@ -46,9 +46,17 @@ public:
     // prints main menu
     void printMainMenu();
 
+    // Prints help screen
     void printHelp();
 
+    // Pause and press enter to continue
     void printPause();
+
+    // Prints good ending
+    void printGoodEnding();
+
+    // Prints bad ending
+    void printBadEnding();
 };
 
 #endif

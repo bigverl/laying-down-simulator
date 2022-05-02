@@ -134,14 +134,43 @@ void UserInterface::printMainMenu()
 void UserInterface::printHelp()
 {
     CLEAR_SCREEN;
+    std::cout << R"(
+    ====================================================================================
+    =                    ||\   ||\           ||\                                       =
+    =                    || |  || |          || |                                      =
+    =                    || |  || | ||||||\  || ||||||||\                              =
+    =                    |||||||| |||  __||\ || |||  __||\                             =
+    =                    ||  __|| ||||||||| ||| ||| /  || |                            =
+    =                    || |  || |||   ____||| ||| |  || |                            =
+    =                    || |  || |\|||||||\ || ||||||||  |                            =
+    =                    \__|  \__| \_______|\__|||  ____/                             =
+    =                                            || |                                  =
+    =                                            || |                                  =
+    =                                            \__|                                  =
+    ====================================================================================
+    =                                                                                  =
+    = Directional movement:                                                            =
+    = To move between rooms, simply enter a cardinal direction.                        =
+    = 'North', 'East', 'South', 'West':                                                =
+    =                                                                                  =
+    = Pick up items:                                                                   =
+    = Enter 'get <item>' where <item> is the one you want to pick up                   =
+    =                                                                                  =
+    = Interact with items in rooms:                                                    =
+    = Enter one of the many commands including push, pull, open, close, and look.      =
+    =                                                                                  =
+    = Solve puzzles:                                                                   =
+    = Just enter 'use <key> <lock>' where <key> is the item in your inventory          =
+    = and the <lock> is the item in the room.                                          =
+    =                                                                                  =
+    = Access Inventory                                                                 =
+    = Enter 'inventory' to view all the items you've picked up so far                  =
+    =                                                                                  =
+    = Quit:                                                                            =
+    = Enter 'quit' to leave the game.                                                  =
+    ====================================================================================
 
-    // Placeholder
-    std::cout << "___________________________________________\n"
-              << "Help: \n"
-              << "___________________________________________\n"
-              << "Command                           Description\n"
-
-              << "\n";
+    )";
 }
 
 void UserInterface::printPause()
@@ -157,4 +186,62 @@ void UserInterface::printRoom(const int &roomID)
     printNavigation(roomID);
     printCommands();
     std::cout << std::endl;
+}
+
+// Prints good ending
+void UserInterface::printGoodEnding()
+{
+    std::cout << "";
+    std::cout << R"(
+        __________________________________________________________
+                    +-------------------------------+
+                    |o   o    /|                    |
+                    |  o o   /  |         oo OO     |
+                    |OO  o  /.    \ /|          O   |
+                    | oo   )       | |           o  |
+                    |       |  \ }/ \|            o |
+                    |      }} \|       {{     oO    |
+                    |     { }    O                O |
+                    |      {                        |
+                    |  O                            |
+                    |===============================|
+            ▄▀  ██   █▀▄▀█ ▄███▄      ████▄     ▄   ▄███▄   █▄▄▄▄ 
+          ▄▀    █ █  █ █ █ █▀   ▀     █   █      █  █▀   ▀  █  ▄▀ 
+          █ ▀▄  █▄▄█ █ ▄ █ ██▄▄       █   █ █     █ ██▄▄    █▀▀▌  
+          █   █ █  █ █   █ █▄   ▄▀    ▀████  █    █ █▄   ▄▀ █  █  
+           ███     █    █  ▀███▀              █  █  ▀███▀     █   
+                  █    ▀                       █▐            ▀    
+                 ▀                             ▐ 
+        __________________________________________________________
+            )";
+}
+
+// Prints bad ending
+void UserInterface::printBadEnding()
+{
+    std::cout << "    ";
+    std::cout << R"(
+        __________________________________________________________
+                    +------------------/|-----------+ 
+                    |  O             /x    \ /|     |
+                    |         oo     )      | |     |
+                    |Oo           o    \ |   \|     |
+                    |  o        O                O  |
+                    |  ._        o      O         o |
+                    |  oo     .      ooo         o  |
+                    |         oo            ooo     |
+                    |      } }       o              |
+                    |     { }                       |
+                    |      {             o          |
+                    |   O                     o     |
+                    |===============================|
+            ▄▀  ██   █▀▄▀█ ▄███▄      ████▄     ▄   ▄███▄   █▄▄▄▄ 
+          ▄▀    █ █  █ █ █ █▀   ▀     █   █      █  █▀   ▀  █  ▄▀ 
+          █ ▀▄  █▄▄█ █ ▄ █ ██▄▄       █   █ █     █ ██▄▄    █▀▀▌  
+          █   █ █  █ █   █ █▄   ▄▀    ▀████  █    █ █▄   ▄▀ █  █  
+           ███     █    █  ▀███▀              █  █  ▀███▀     █   
+                  █    ▀                       █▐            ▀    
+                 ▀                             ▐ 
+        __________________________________________________________
+            )";
 }
