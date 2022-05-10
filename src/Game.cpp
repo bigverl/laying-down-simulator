@@ -216,17 +216,17 @@ void Game::startAdventure()
     CLEAR_SCREEN;
     // Placeholder start
     std::cout << "_________________________________________________________________________________________\n"
-              << "...What time is it? Ugh, you shouldn't have drank all those Mountain Dew Code Reds last\n"
-              << "night. Oh no, is it that late already? You're going to be late for your CS midterm!\n"
+              << "...What time is it? Ugh, you shouldn't have drank all those Mountain Dews last night.\n"
+              << "Oh no, is it that late already? You're going to be late for your CS midterm!\n"
               << "\n"
               << "Unfortunately, you realize you won't make it in time if you park in your normal parking\n"
               << "space given that the only spot you can get is a half a mile away from the CS building.\n"
               << "Things were a lot easier before the administration decided to build a shopping center\n"
               << "on top of your favorite parking lot.\n"
               << "\n"
-              << "You consider skipping the midterm altogether, but then remember that your mom said that\n"
-              << "if you fail another class your mom said she's going to stop doing your laundry, and your\n"
-              << "dad said he's going to stop paying for your vidja allowance.\n"
+              << "You consider skipping the midterm altogether, but then you remember that your mom said\n"
+              << "that if you fail another class she's going to stop doing your laundry, and your dad said\n"
+              << "he's going to stop paying for your vidja allowance.\n"
               << "\n"
               << "You remember that your psychotic roommate said that when he very rarely decides to attend\n"
               << "class, he always takes the -secret tunnels- that connect your dorm directly to the CS\n"
@@ -585,7 +585,7 @@ void Game::use()
     {
         std::cout << errorMsg;
     }
-    else if (!PLAYER.propInInventory(propID)) // Check to see if it's in player inventory
+    else if (!PLAYER.propInInventory(propID) && propID != DESK) // Check to see if it's in player inventory
     {
         std::cout << errorMsg;
     }
