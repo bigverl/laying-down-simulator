@@ -653,7 +653,7 @@ void Database::initializeRoomDescriptions()
        << "spices, cups, and dishes. The fridge is barely stocked and full of leftovers. There’s a bunch of\n"
        << "energy drinks lined up along the fridge door along with some condiments. On top of the fridge is\n"
        << "some fish FOOD. Across the kitchen is your banged up front DOOR. It seems like a lot of things\n"
-       << "in this apartment need some work.\n";
+       << "in this apartment need some work. At least the front door LOCK you purchased is still intact.\n";
     desc = ss.str();
     rooms->at(1).setDescriptionTextDefault(desc);
     ss.str("");
